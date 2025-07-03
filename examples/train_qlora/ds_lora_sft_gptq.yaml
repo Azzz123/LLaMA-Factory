@@ -18,7 +18,7 @@ max_samples: 3000
 overwrite_cache: true
 preprocessing_num_workers: 8
 dataloader_num_workers: 4
-# enable_thinking: false
+enable_thinking: false
 
 ### output
 output_dir: saves/DeepSeek/DeepSeek-R1-Distill-Llama-8B-CMNEE-EE/qlora/sft/20250703

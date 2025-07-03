@@ -716,7 +716,7 @@
     "folder": "python"
   },
   "CMNEE_LLMF_EE": {
-    "file_name": "CMNEE_LLMF_EE/train.json",
+    "file_name": "graduate/CMNEE_LLMF_EE/train.json",
     "columns": {
       "prompt": "instruction",
       "query": "input",
