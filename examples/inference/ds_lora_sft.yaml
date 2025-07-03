@@ -1,0 +1,5 @@
+model_name_or_path: export_results/DeepSeek/DeepSeek-R1-Distill-Llama-8B-cause/qlora/sft/33
+adapter_name_or_path:
+template: deepseek3
+infer_backend: huggingface  # choices: [huggingface, vllm]
+trust_remote_code: true

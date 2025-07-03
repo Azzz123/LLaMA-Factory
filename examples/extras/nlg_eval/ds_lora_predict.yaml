@@ -1,0 +1,29 @@
+# The batch generation can be SLOW using this config.
+# For faster inference, we recommend to use `scripts/vllm_infer.py`.
+
+### model
+model_name_or_path: models/DeepSeek/DeepSeek-R1-Distill-Llama-8B
+adapter_name_or_path: saves/DeepSeek/DeepSeek-R1-Distill-Llama-8B-cause/qlora/sft/100
+trust_remote_code: true
+
+### method
+stage: sft
+do_predict: true
+finetuning_type: lora
+
+### dataset
+eval_dataset: cause_test
+template: llama3
+cutoff_len: 2048
+max_samples: 1000
+overwrite_cache: true
+preprocessing_num_workers: 10
+
+### output
+output_dir: saves/DeepSeek/DeepSeek-R1-Distill-Llama-8B-cause/predict/sft/100
+overwrite_output_dir: true
+
+### eval
+per_device_eval_batch_size: 8
+predict_with_generate: true
+ddp_timeout: 180000000
