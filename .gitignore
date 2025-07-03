@@ -166,14 +166,16 @@ cython_debug/
 uv.lock
 
 # custom .gitignore
+data/graduate
 hf_cache/
 ms_cache/
 om_cache/
 cache/
 config/
 saves/
-output/
+export_results/
 wandb/
 swanlog/
 generated_predictions.jsonl
 predictions_score.json
+
