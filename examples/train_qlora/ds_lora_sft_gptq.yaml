@@ -14,7 +14,7 @@ lora_target: q_proj, v_proj
 dataset: CMNEE_LLMF_EE
 template: deepseekr1
 cutoff_len: 2048
-max_samples: 3000
+max_samples: 100000
 overwrite_cache: true
 preprocessing_num_workers: 8
 dataloader_num_workers: 4
