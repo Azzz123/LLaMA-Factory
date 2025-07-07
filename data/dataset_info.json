@@ -723,5 +723,14 @@
       "response": "output",
       "system": "system"
     }
+  },
+  "CMNEE_LLMF_EE_test": {
+    "file_name": "graduate/CMNEE_LLMF_EE/test.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
   }
 }
