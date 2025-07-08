@@ -50,7 +50,7 @@ def vllm_infer(
     repetition_penalty: float = 1.0,
     skip_special_tokens: bool = True,
     default_system: Optional[str] = None,
-    enable_thinking: bool = False,
+    enable_thinking: bool = True,
     seed: Optional[int] = None,
     pipeline_parallel_size: int = 1,
     image_max_pixels: int = 768 * 768,
