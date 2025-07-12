@@ -1,0 +1,13 @@
+### Note: DO NOT use quantized model or quantization_bit when merging lora adapters
+
+### model
+model_name_or_path: models/Qwen/qwen2.5-7B-Instruct
+adapter_name_or_path: saves/Qwen/Qwen-2.5-7B-Instruct/DSN-DEMAMD-new/qlora-sft
+template: qwen
+trust_remote_code: true
+
+### export
+export_dir: export_results/Qwen/Qwen-2.5-7B-Instruct/DSN-DEMAMD-new/qlora-sft
+export_size: 5
+export_device: auto  # choices: [cpu, auto]
+export_legacy_format: false

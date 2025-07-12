@@ -715,8 +715,8 @@
     },
     "folder": "python"
   },
-  "CMNEE_LLMF_EE": {
-    "file_name": "graduate/CMNEE_LLMF_EE/train.json",
+  "CMNEE_train": {
+    "file_name": "graduate/CMNEE-new/train.json",
     "columns": {
       "prompt": "instruction",
       "query": "input",
@@ -724,8 +724,35 @@
       "system": "system"
     }
   },
-  "CMNEE_LLMF_EE_test": {
-    "file_name": "graduate/CMNEE_LLMF_EE/test.json",
+  "CMNEE_test": {
+    "file_name": "graduate/CMNEE-new/test.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_train": {
+    "file_name": "graduate/DSN-DEMAMD-new/train.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_test": {
+    "file_name": "graduate/DSN-DEMAMD-new/test.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_reason": {
+    "file_name": "graduate/DSN-DEMAMD-reason/train.json",
     "columns": {
       "prompt": "instruction",
       "query": "input",
