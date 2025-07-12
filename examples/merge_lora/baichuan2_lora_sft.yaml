@@ -1,0 +1,13 @@
+### Note: DO NOT use quantized model or quantization_bit when merging lora adapters
+
+### model
+model_name_or_path: models/Baichuan/Baichuan-2-7B-Chat
+adapter_name_or_path: saves/Baichuan/Baichuan-2-7B-Chat/DSN-DEMAMD-new/qlora-sft
+template: baichuan2
+trust_remote_code: true
+
+### export
+export_dir: export_results/Baichuan/Baichuan-2-7B-Chat/DSN-DEMAMD-new/qlora-sft
+export_size: 5
+export_device: auto  # choices: [cpu, auto]
+export_legacy_format: false
