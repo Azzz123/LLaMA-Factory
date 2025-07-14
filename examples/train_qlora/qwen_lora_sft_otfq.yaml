@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: models/Qwen/qwen2.5-7B-Instruct
+model_name_or_path: models/Qwen/Qwen-2.5-7B-Instruct
 quantization_bit: 4  # choices: [8 (bnb/hqq/eetq), 4 (bnb/hqq), 3 (hqq), 2 (hqq)]
 quantization_method: bnb  # choices: [bnb, hqq, eetq]
 trust_remote_code: true
@@ -12,19 +12,19 @@ lora_rank: 8
 lora_target: q_proj,k_proj,v_proj,o_proj
 
 ### dataset
-dataset: DSN_DEMAMD_train
+dataset: CMNEE_train
 template: qwen
-cutoff_len: 2048
-max_samples: 10000
+cutoff_len: 1024
+max_samples: 15000
 overwrite_cache: true
-preprocessing_num_workers: 8
-dataloader_num_workers: 8
+preprocessing_num_workers: 16
+dataloader_num_workers: 16
 enable_thinking: false
 
 ### output
-output_dir: saves/Qwen/Qwen-2.5-7B-Instruct/DSN-DEMAMD-new/qlora-sft
+output_dir: saves/Qwen/Qwen-2.5-7B-Instruct/CMNEE-new/qlora-sft
 logging_steps: 10
-save_steps: 500
+save_steps: 1000
 plot_loss: true
 overwrite_output_dir: true
 save_only_model: true
@@ -42,6 +42,6 @@ ddp_timeout: 180000000
 
 ### eval
 val_size: 0.1
-per_device_eval_batch_size: 4
+per_device_eval_batch_size: 8
 eval_strategy: steps
 eval_steps: 500

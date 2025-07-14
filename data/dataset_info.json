@@ -759,5 +759,32 @@
       "response": "output",
       "system": "system"
     }
+  },
+  "DSN_DEMAMD_k1": {
+    "file_name": "graduate/DSN-DEMAMD-fewshot/test_k1.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_k3": {
+    "file_name": "graduate/DSN-DEMAMD-fewshot/test_k3.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_k5": {
+    "file_name": "graduate/DSN-DEMAMD-fewshot/test_k5.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
   }
 }

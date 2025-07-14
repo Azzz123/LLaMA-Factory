@@ -40,7 +40,7 @@ def vllm_infer(
     dataset_dir: str = "data",
     template: str = "default",
     cutoff_len: int = 2048,
-    max_samples: Optional[int] = None,
+    max_samples: Optional[int] = 20000,
     vllm_config: str = "{}",
     save_name: str = "generated_predictions.jsonl",
     temperature: float = 0.5,
