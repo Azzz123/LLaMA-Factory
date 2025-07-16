@@ -73,12 +73,12 @@ def main(filename: str):
     output_dir = os.path.dirname(filename)
     if output_dir == "":
         output_dir = "."
-    save_path = os.path.join(output_dir, "predictions_score.json")
+    save_path = os.path.join(output_dir, "bleu_rouge_score.json")
 
     with open(save_path, "w", encoding="utf-8") as f:
         json.dump(average_score, f, indent=4)
 
-    print(f"\nDone in {time.time() - start_time:.3f}s.\nScore file saved to predictions_score.json")
+    print(f"\nDone in {time.time() - start_time:.3f}s.\nScore file saved to bleu_rouge_score.json")
 
 
 if __name__ == "__main__":
