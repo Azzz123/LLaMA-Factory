@@ -840,5 +840,23 @@
       "response": "output",
       "system": "system"
     }
+  },
+  "cmnee_cot_test": {
+    "file_name": "graduate/CMNEE-cot/test.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "cmnee_cot_train": {
+    "file_name": "graduate/CMNEE-cot/train.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
   }
 }

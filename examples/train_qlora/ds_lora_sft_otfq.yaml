@@ -12,19 +12,20 @@ lora_rank: 8
 lora_target: q_proj,k_proj,v_proj,o_proj
 
 ### dataset
-dataset: DSN_DEMAMD_train
+dataset: cmnee_cot_train
 template: deepseekr1
-cutoff_len: 2048
-max_samples: 10000
+cutoff_len: 1364
+max_samples: 5001
 overwrite_cache: true
 preprocessing_num_workers: 8
 dataloader_num_workers: 8
-enable_thinking: false
+enable_thinking: true
+seed: 42
 
 ### output
-output_dir: saves/DeepSeek/DeepSeek-R1-Distill-Llama-8B/DSN-DEMAMD-new/qlora-sft
-logging_steps: 10
-save_steps: 500
+output_dir: saves/DeepSeek/DeepSeek-R1-Distill-Llama-8B/cmnee_cot/qlora-sft/42
+logging_steps: 5
+save_steps: 100
 plot_loss: true
 overwrite_output_dir: true
 save_only_model: true
@@ -42,6 +43,6 @@ ddp_timeout: 180000000
 
 ### eval
 val_size: 0.1
-per_device_eval_batch_size: 4
+per_device_eval_batch_size: 8
 eval_strategy: steps
-eval_steps: 500
+eval_steps: 100
