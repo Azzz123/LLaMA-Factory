@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 import requests
 from typing_extensions import override
 
+from .base_engine import BaseEngine, Response
 from ..data import get_template_and_fix_tokenizer
 from ..extras import logging
 from ..extras.constants import AUDIO_PLACEHOLDER, IMAGE_PLACEHOLDER, VIDEO_PLACEHOLDER, EngineName
@@ -29,16 +30,12 @@ from ..extras.packages import is_sglang_available
 from ..hparams import DataArguments, FinetuningArguments, GeneratingArguments, ModelArguments
 from ..model import load_config, load_tokenizer
 from ..model.model_utils.quantization import QuantizationMethod
-from .base_engine import BaseEngine, Response
-
 
 if is_sglang_available():
     from sglang.utils import launch_server_cmd, terminate_process, wait_for_server  # type: ignore
 
-
 if TYPE_CHECKING:
     from ..data.mm_plugin import AudioInput, ImageInput, VideoInput
-
 
 logger = logging.get_logger(__name__)
 
@@ -56,11 +53,11 @@ class SGLangEngine(BaseEngine):
     """
 
     def __init__(
-        self,
-        model_args: "ModelArguments",
-        data_args: "DataArguments",
-        finetuning_args: "FinetuningArguments",
-        generating_args: "GeneratingArguments",
+            self,
+            model_args: "ModelArguments",
+            data_args: "DataArguments",
+            finetuning_args: "FinetuningArguments",
+            generating_args: "GeneratingArguments",
     ) -> None:
         self.name = EngineName.SGLANG
         self.model_args = model_args
@@ -138,14 +135,14 @@ class SGLangEngine(BaseEngine):
                 logger.warning(f"Error terminating SGLang server: {str(e)}")
 
     async def _generate(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> AsyncIterator[dict[str, Any]]:
         if images is not None and not any(IMAGE_PLACEHOLDER in message["content"] for message in messages):
             messages[0]["content"] = IMAGE_PLACEHOLDER * len(images) + messages[0]["content"]
@@ -198,9 +195,10 @@ class SGLangEngine(BaseEngine):
             "stop_token_ids": self.template.get_stop_token_ids(self.tokenizer),
             "max_new_tokens": max_tokens,
             "repetition_penalty": (
-                repetition_penalty if repetition_penalty is not None else self.generating_args["repetition_penalty"]
-            )
-            or 1.0,  # repetition_penalty must > 0
+                                      repetition_penalty if repetition_penalty is not None else self.generating_args[
+                                          "repetition_penalty"]
+                                  )
+                                  or 1.0,  # repetition_penalty must > 0
             "skip_special_tokens": skip_special_tokens
             if skip_special_tokens is not None
             else self.generating_args["skip_special_tokens"],
@@ -230,14 +228,14 @@ class SGLangEngine(BaseEngine):
 
     @override
     async def chat(
-        self,
-        messages: Sequence[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[Sequence["ImageInput"]] = None,
-        videos: Optional[Sequence["VideoInput"]] = None,
-        audios: Optional[Sequence["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: Sequence[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[Sequence["ImageInput"]] = None,
+            videos: Optional[Sequence["VideoInput"]] = None,
+            audios: Optional[Sequence["AudioInput"]] = None,
+            **input_kwargs,
     ) -> list["Response"]:
         final_output = None
         generator = await self._generate(messages, system, tools, images, videos, audios, **input_kwargs)
@@ -256,27 +254,27 @@ class SGLangEngine(BaseEngine):
 
     @override
     async def stream_chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> AsyncGenerator[str, None]:
         generated_text = ""
         generator = await self._generate(messages, system, tools, images, videos, audios, **input_kwargs)
         for result in generator:
-            delta_text = result["text"][len(generated_text) :]
+            delta_text = result["text"][len(generated_text):]
             generated_text = result["text"]
             yield delta_text
 
     @override
     async def get_scores(
-        self,
-        batch_input: list[str],
-        **input_kwargs,
+            self,
+            batch_input: list[str],
+            **input_kwargs,
     ) -> list[float]:
         raise NotImplementedError("SGLang engine does not support `get_scores`.")
 

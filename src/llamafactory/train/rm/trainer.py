@@ -24,18 +24,16 @@ import torch
 from transformers import Trainer
 from typing_extensions import override
 
-from ...extras import logging
-from ...extras.packages import is_transformers_version_greater_than
 from ..callbacks import FixValueHeadModelCallback, SaveProcessorCallback
 from ..trainer_utils import create_custom_optimizer, create_custom_scheduler
-
+from ...extras import logging
+from ...extras.packages import is_transformers_version_greater_than
 
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, ProcessorMixin
     from transformers.trainer import PredictionOutput
 
     from ...hparams import FinetuningArguments
-
 
 logger = logging.get_logger(__name__)
 
@@ -44,7 +42,7 @@ class PairwiseTrainer(Trainer):
     r"""Inherits Trainer to compute pairwise loss."""
 
     def __init__(
-        self, finetuning_args: "FinetuningArguments", processor: Optional["ProcessorMixin"], **kwargs
+            self, finetuning_args: "FinetuningArguments", processor: Optional["ProcessorMixin"], **kwargs
     ) -> None:
         if is_transformers_version_greater_than("4.46"):
             kwargs["processing_class"] = kwargs.pop("tokenizer")
@@ -72,7 +70,7 @@ class PairwiseTrainer(Trainer):
 
     @override
     def create_scheduler(
-        self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
+            self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
     ) -> "torch.optim.lr_scheduler.LRScheduler":
         create_custom_scheduler(self.args, num_training_steps, optimizer)
         return super().create_scheduler(num_training_steps, optimizer)
@@ -86,7 +84,7 @@ class PairwiseTrainer(Trainer):
 
     @override
     def compute_loss(
-        self, model: "PreTrainedModel", inputs: dict[str, "torch.Tensor"], return_outputs: bool = False, **kwargs
+            self, model: "PreTrainedModel", inputs: dict[str, "torch.Tensor"], return_outputs: bool = False, **kwargs
     ) -> Union["torch.Tensor", tuple["torch.Tensor", list["torch.Tensor"]]]:
         r"""Compute pairwise loss. The first n examples are chosen and the last n examples are rejected.
 

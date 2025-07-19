@@ -29,21 +29,20 @@ from llamafactory.extras.constants import IGNORE_INDEX
 from llamafactory.hparams import get_train_args
 from llamafactory.model import load_tokenizer
 
-
 BASE_LR = 3e-4  # 1.5e-4 for 30B-70B models
 BASE_BS = 4_000_000  # from llama paper
 
 
 def calculate_lr(
-    model_name_or_path: str,
-    batch_size: int,  # total batch size, namely (batch size * gradient accumulation * world size)
-    stage: Literal["pt", "sft"] = "sft",
-    dataset: str = "alpaca_en_demo",
-    dataset_dir: str = "data",
-    template: str = "default",
-    cutoff_len: int = 2048,  # i.e. maximum input length during training
-    is_mistral_or_gemma: bool = False,  # mistral and gemma models opt for a smaller learning rate,
-    packing: bool = False,
+        model_name_or_path: str,
+        batch_size: int,  # total batch size, namely (batch size * gradient accumulation * world size)
+        stage: Literal["pt", "sft"] = "sft",
+        dataset: str = "alpaca_en_demo",
+        dataset_dir: str = "data",
+        template: str = "default",
+        cutoff_len: int = 2048,  # i.e. maximum input length during training
+        is_mistral_or_gemma: bool = False,  # mistral and gemma models opt for a smaller learning rate,
+        packing: bool = False,
 ):
     r"""Calculate the optimal learning rate for 7B/13B models using LLaMA's hyper-parameters.
 

@@ -18,7 +18,6 @@ import pytest
 
 from llamafactory.train.test_utils import compare_model, load_infer_model, load_reference_model, patch_valuehead_model
 
-
 TINY_LLAMA3 = os.getenv("TINY_LLAMA3", "llamafactory/tiny-random-Llama-3")
 
 TINY_LLAMA_VALUEHEAD = os.getenv("TINY_LLAMA_VALUEHEAD", "llamafactory/tiny-random-Llama-3-valuehead")

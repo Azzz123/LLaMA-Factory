@@ -28,12 +28,10 @@ import torch
 from ...extras import logging
 from ...extras.constants import LAYERNORM_NAMES
 
-
 if TYPE_CHECKING:
     from transformers import PreTrainedModel
 
     from ...hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 
@@ -45,10 +43,10 @@ def get_unsloth_gradient_checkpointing_func() -> Callable:
         @staticmethod
         @torch.cuda.amp.custom_fwd
         def forward(
-            ctx: "torch.autograd.Function",
-            forward_function: "torch.Module",
-            hidden_states: "torch.Tensor",
-            *args: Union["torch.Tensor", Any],
+                ctx: "torch.autograd.Function",
+                forward_function: "torch.Module",
+                hidden_states: "torch.Tensor",
+                *args: Union["torch.Tensor", Any],
         ) -> "torch.Tensor":
             saved_hidden_states = hidden_states.to("cpu", non_blocking=True)
             with torch.no_grad():
@@ -102,9 +100,9 @@ def get_custom_gradient_checkpointing_func(gradient_checkpointing_func: Callable
 
 
 def _gradient_checkpointing_enable(
-    self: "PreTrainedModel",
-    gradient_checkpointing_kwargs: Optional[dict[str, Any]] = None,
-    use_unsloth_gc: bool = False,
+        self: "PreTrainedModel",
+        gradient_checkpointing_kwargs: Optional[dict[str, Any]] = None,
+        use_unsloth_gc: bool = False,
 ) -> None:
     r"""Activates gradient checkpointing for the current model.
 
@@ -133,7 +131,7 @@ def _gradient_checkpointing_enable(
 
 
 def _fp32_forward_post_hook(
-    module: "torch.nn.Module", args: tuple["torch.Tensor"], output: "torch.Tensor"
+        module: "torch.nn.Module", args: tuple["torch.Tensor"], output: "torch.Tensor"
 ) -> "torch.Tensor":
     return output.to(torch.float32)
 

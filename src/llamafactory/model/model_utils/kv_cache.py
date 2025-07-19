@@ -16,9 +16,7 @@ from typing import TYPE_CHECKING
 
 from ...extras import logging
 
-
 logger = logging.get_logger(__name__)
-
 
 if TYPE_CHECKING:
     from transformers import PretrainedConfig

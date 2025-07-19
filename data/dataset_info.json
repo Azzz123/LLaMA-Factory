@@ -715,8 +715,125 @@
     },
     "folder": "python"
   },
-  "CMNEE_LLMF_EE": {
-    "file_name": "CMNEE_LLMF_EE/train.json",
+  "CMNEE_train": {
+    "file_name": "graduate/CMNEE-new/train.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "CMNEE_test": {
+    "file_name": "graduate/CMNEE-new/test.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_train": {
+    "file_name": "graduate/DSN-DEMAMD-new/train.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_test": {
+    "file_name": "graduate/DSN-DEMAMD-new/test.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_reason": {
+    "file_name": "graduate/DSN-DEMAMD-reason/train.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_k1": {
+    "file_name": "graduate/DSN-DEMAMD-fewshot/test_k1.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_k3": {
+    "file_name": "graduate/DSN-DEMAMD-fewshot/test_k3.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_k5": {
+    "file_name": "graduate/DSN-DEMAMD-fewshot/test_k5.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_wo_arg_train": {
+    "file_name": "graduate/DSN-DEMAMD-ablation/train_wo_argument.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_wo_contex_train": {
+    "file_name": "graduate/DSN-DEMAMD-ablation/train_wo_context.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_wo_global_train": {
+    "file_name": "graduate/DSN-DEMAMD-ablation/train_wo_global.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_wo_arg_test": {
+    "file_name": "graduate/DSN-DEMAMD-ablation/test_wo_argument.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_wo_contex_test": {
+    "file_name": "graduate/DSN-DEMAMD-ablation/test_wo_context.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "system": "system"
+    }
+  },
+  "DSN_DEMAMD_wo_global_test": {
+    "file_name": "graduate/DSN-DEMAMD-ablation/test_wo_global.json",
     "columns": {
       "prompt": "instruction",
       "query": "input",

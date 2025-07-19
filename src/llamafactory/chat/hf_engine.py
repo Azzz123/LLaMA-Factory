@@ -22,12 +22,11 @@ import torch
 from transformers import GenerationConfig, TextIteratorStreamer
 from typing_extensions import override
 
+from .base_engine import BaseEngine, Response
 from ..data import get_template_and_fix_tokenizer
 from ..extras import logging
 from ..extras.constants import AUDIO_PLACEHOLDER, IMAGE_PLACEHOLDER, VIDEO_PLACEHOLDER, EngineName
 from ..model import load_model, load_tokenizer
-from .base_engine import BaseEngine, Response
-
 
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, PreTrainedTokenizer, ProcessorMixin
@@ -37,17 +36,16 @@ if TYPE_CHECKING:
     from ..data.mm_plugin import AudioInput, ImageInput, VideoInput
     from ..hparams import DataArguments, FinetuningArguments, GeneratingArguments, ModelArguments
 
-
 logger = logging.get_logger(__name__)
 
 
 class HuggingfaceEngine(BaseEngine):
     def __init__(
-        self,
-        model_args: "ModelArguments",
-        data_args: "DataArguments",
-        finetuning_args: "FinetuningArguments",
-        generating_args: "GeneratingArguments",
+            self,
+            model_args: "ModelArguments",
+            data_args: "DataArguments",
+            finetuning_args: "FinetuningArguments",
+            generating_args: "GeneratingArguments",
     ) -> None:
         self.name = EngineName.HF
         self.can_generate = finetuning_args.stage == "sft"
@@ -71,18 +69,18 @@ class HuggingfaceEngine(BaseEngine):
 
     @staticmethod
     def _process_args(
-        model: "PreTrainedModel",
-        tokenizer: "PreTrainedTokenizer",
-        processor: Optional["ProcessorMixin"],
-        template: "Template",
-        generating_args: dict[str, Any],
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        input_kwargs: Optional[dict[str, Any]] = {},
+            model: "PreTrainedModel",
+            tokenizer: "PreTrainedTokenizer",
+            processor: Optional["ProcessorMixin"],
+            template: "Template",
+            generating_args: dict[str, Any],
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            input_kwargs: Optional[dict[str, Any]] = {},
     ) -> tuple[dict[str, Any], int]:
         mm_input_dict = {"images": [], "videos": [], "audios": [], "imglens": [0], "vidlens": [0], "audlens": [0]}
         if images is not None:
@@ -183,7 +181,7 @@ class HuggingfaceEngine(BaseEngine):
             if isinstance(value, list) and isinstance(value[0], torch.Tensor):  # for pixtral inputs
                 value = torch.stack(value)  # assume they have same sizes
             elif (
-                isinstance(value, list) and isinstance(value[0], list) and isinstance(value[0][0], torch.Tensor)
+                    isinstance(value, list) and isinstance(value[0], list) and isinstance(value[0][0], torch.Tensor)
             ):  # for minicpmv inputs
                 value = torch.stack([torch.stack(v) for v in value])
             elif not isinstance(value, torch.Tensor):
@@ -210,18 +208,18 @@ class HuggingfaceEngine(BaseEngine):
     @staticmethod
     @torch.inference_mode()
     def _chat(
-        model: "PreTrainedModel",
-        tokenizer: "PreTrainedTokenizer",
-        processor: Optional["ProcessorMixin"],
-        template: "Template",
-        generating_args: dict[str, Any],
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        input_kwargs: Optional[dict[str, Any]] = {},
+            model: "PreTrainedModel",
+            tokenizer: "PreTrainedTokenizer",
+            processor: Optional["ProcessorMixin"],
+            template: "Template",
+            generating_args: dict[str, Any],
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            input_kwargs: Optional[dict[str, Any]] = {},
     ) -> list["Response"]:
         gen_kwargs, prompt_length = HuggingfaceEngine._process_args(
             model,
@@ -265,18 +263,18 @@ class HuggingfaceEngine(BaseEngine):
     @staticmethod
     @torch.inference_mode()
     def _stream_chat(
-        model: "PreTrainedModel",
-        tokenizer: "PreTrainedTokenizer",
-        processor: Optional["ProcessorMixin"],
-        template: "Template",
-        generating_args: dict[str, Any],
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        input_kwargs: Optional[dict[str, Any]] = {},
+            model: "PreTrainedModel",
+            tokenizer: "PreTrainedTokenizer",
+            processor: Optional["ProcessorMixin"],
+            template: "Template",
+            generating_args: dict[str, Any],
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            input_kwargs: Optional[dict[str, Any]] = {},
     ) -> Callable[[], str]:
         gen_kwargs, _ = HuggingfaceEngine._process_args(
             model,
@@ -312,10 +310,10 @@ class HuggingfaceEngine(BaseEngine):
     @staticmethod
     @torch.inference_mode()
     def _get_scores(
-        model: "PreTrainedModelWrapper",
-        tokenizer: "PreTrainedTokenizer",
-        batch_input: list[str],
-        input_kwargs: Optional[dict[str, Any]] = {},
+            model: "PreTrainedModelWrapper",
+            tokenizer: "PreTrainedTokenizer",
+            batch_input: list[str],
+            input_kwargs: Optional[dict[str, Any]] = {},
     ) -> list[float]:
         max_length: Optional[int] = input_kwargs.pop("max_length", None)
         device = getattr(model.pretrained_model, "device", "cuda")
@@ -333,14 +331,14 @@ class HuggingfaceEngine(BaseEngine):
 
     @override
     async def chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> list["Response"]:
         if not self.can_generate:
             raise ValueError("The current model does not support `chat`.")
@@ -364,14 +362,14 @@ class HuggingfaceEngine(BaseEngine):
 
     @override
     async def stream_chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> AsyncGenerator[str, None]:
         if not self.can_generate:
             raise ValueError("The current model does not support `stream_chat`.")
@@ -400,9 +398,9 @@ class HuggingfaceEngine(BaseEngine):
 
     @override
     async def get_scores(
-        self,
-        batch_input: list[str],
-        **input_kwargs,
+            self,
+            batch_input: list[str],
+            **input_kwargs,
     ) -> list[float]:
         if self.can_generate:
             raise ValueError("Cannot get scores using an auto-regressive model.")

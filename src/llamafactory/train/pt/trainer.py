@@ -19,10 +19,9 @@ import torch
 from transformers import Trainer
 from typing_extensions import override
 
-from ...extras.packages import is_transformers_version_greater_than
 from ..callbacks import SaveProcessorCallback
 from ..trainer_utils import create_custom_optimizer, create_custom_scheduler
-
+from ...extras.packages import is_transformers_version_greater_than
 
 if TYPE_CHECKING:
     from transformers import ProcessorMixin
@@ -34,7 +33,7 @@ class CustomTrainer(Trainer):
     r"""Inherit Trainer for custom optimizer."""
 
     def __init__(
-        self, finetuning_args: "FinetuningArguments", processor: Optional["ProcessorMixin"], **kwargs
+            self, finetuning_args: "FinetuningArguments", processor: Optional["ProcessorMixin"], **kwargs
     ) -> None:
         if is_transformers_version_greater_than("4.46"):
             kwargs["processing_class"] = kwargs.pop("tokenizer")
@@ -64,7 +63,7 @@ class CustomTrainer(Trainer):
 
     @override
     def create_scheduler(
-        self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
+            self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
     ) -> "torch.optim.lr_scheduler.LRScheduler":
         create_custom_scheduler(self.args, num_training_steps, optimizer)
         return super().create_scheduler(num_training_steps, optimizer)

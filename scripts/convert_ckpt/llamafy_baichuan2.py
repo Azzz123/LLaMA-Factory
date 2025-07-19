@@ -24,7 +24,6 @@ from safetensors.torch import save_file
 from tqdm import tqdm
 from transformers.modeling_utils import SAFE_WEIGHTS_INDEX_NAME, SAFE_WEIGHTS_NAME, WEIGHTS_INDEX_NAME, WEIGHTS_NAME
 
-
 CONFIG_NAME = "config.json"
 
 
@@ -40,8 +39,8 @@ def save_weight(input_dir: str, output_dir: str, shard_size: str, save_safetenso
         if "W_pack" in key:
             proj_size = value.size(0) // 3
             llama_state_dict[key.replace("W_pack", "q_proj")] = value[:proj_size, :]
-            llama_state_dict[key.replace("W_pack", "k_proj")] = value[proj_size : 2 * proj_size, :]
-            llama_state_dict[key.replace("W_pack", "v_proj")] = value[2 * proj_size :, :]
+            llama_state_dict[key.replace("W_pack", "k_proj")] = value[proj_size: 2 * proj_size, :]
+            llama_state_dict[key.replace("W_pack", "v_proj")] = value[2 * proj_size:, :]
         elif "lm_head" in key:
             llama_state_dict[key] = torch.nn.functional.normalize(value)
         else:
@@ -89,10 +88,10 @@ def save_config(input_dir: str, output_dir: str):
 
 
 def llamafy_baichuan2(
-    input_dir: str,
-    output_dir: str,
-    shard_size: str = "2GB",
-    save_safetensors: bool = True,
+        input_dir: str,
+        output_dir: str,
+        shard_size: str = "2GB",
+        save_safetensors: bool = True,
 ):
     r"""Convert the Baichuan2-7B model in the same format as LLaMA2-7B.
 

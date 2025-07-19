@@ -16,23 +16,20 @@ import json
 from collections.abc import Generator
 from typing import TYPE_CHECKING, Union
 
+from ..common import get_save_dir, load_config
+from ..locales import ALERTS
 from ...extras.constants import PEFT_METHODS
 from ...extras.misc import torch_gc
 from ...extras.packages import is_gradio_available
 from ...train.tuner import export_model
-from ..common import get_save_dir, load_config
-from ..locales import ALERTS
-
 
 if is_gradio_available():
     import gradio as gr
-
 
 if TYPE_CHECKING:
     from gradio.components import Component
 
     from ..engine import Engine
-
 
 GPTQ_BITS = ["8", "4", "3", "2"]
 
@@ -45,20 +42,20 @@ def can_quantize(checkpoint_path: Union[str, list[str]]) -> "gr.Dropdown":
 
 
 def save_model(
-    lang: str,
-    model_name: str,
-    model_path: str,
-    finetuning_type: str,
-    checkpoint_path: Union[str, list[str]],
-    template: str,
-    export_size: int,
-    export_quantization_bit: str,
-    export_quantization_dataset: str,
-    export_device: str,
-    export_legacy_format: bool,
-    export_dir: str,
-    export_hub_model_id: str,
-    extra_args: str,
+        lang: str,
+        model_name: str,
+        model_path: str,
+        finetuning_type: str,
+        checkpoint_path: Union[str, list[str]],
+        template: str,
+        export_size: int,
+        export_quantization_bit: str,
+        export_quantization_dataset: str,
+        export_device: str,
+        export_legacy_format: bool,
+        export_dir: str,
+        export_hub_model_id: str,
+        extra_args: str,
 ) -> Generator[str, None, None]:
     user_config = load_config()
     error = ""

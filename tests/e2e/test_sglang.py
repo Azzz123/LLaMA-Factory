@@ -19,9 +19,7 @@ import pytest
 from llamafactory.chat import ChatModel
 from llamafactory.extras.packages import is_sglang_available
 
-
 MODEL_NAME = "Qwen/Qwen2.5-0.5B"
-
 
 INFER_ARGS = {
     "model_name_or_path": MODEL_NAME,
@@ -32,7 +30,6 @@ INFER_ARGS = {
     "do_sample": False,
     "max_new_tokens": 1,
 }
-
 
 MESSAGES = [
     {"role": "user", "content": "Hi"},

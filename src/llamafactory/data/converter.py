@@ -17,9 +17,8 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from ..extras import logging
 from .data_utils import Role
-
+from ..extras import logging
 
 if TYPE_CHECKING:
     from datasets import Dataset, IterableDataset
@@ -30,7 +29,6 @@ if TYPE_CHECKING:
     from .parser import DatasetAttr
 
     MediaType = Union[ImageInput, VideoInput, AudioInput]
-
 
 logger = logging.get_logger(__name__)
 
@@ -106,9 +104,9 @@ class AlpacaDatasetConverter(DatasetConverter):
             else:
                 response = [{"role": Role.ASSISTANT.value, "content": ""}] + response
         elif (
-            self.dataset_attr.ranking
-            and isinstance(example[self.dataset_attr.chosen], str)
-            and isinstance(example[self.dataset_attr.rejected], str)
+                self.dataset_attr.ranking
+                and isinstance(example[self.dataset_attr.chosen], str)
+                and isinstance(example[self.dataset_attr.rejected], str)
         ):  # pairwise example
             response = [
                 {"role": Role.ASSISTANT.value, "content": example[self.dataset_attr.chosen]},
@@ -146,9 +144,9 @@ class SharegptDatasetConverter(DatasetConverter):
         accept_tags = (odd_tags, even_tags)
         messages = example[self.dataset_attr.messages]
         if (
-            self.dataset_attr.system_tag
-            and len(messages) != 0
-            and messages[0][self.dataset_attr.role_tag] == self.dataset_attr.system_tag
+                self.dataset_attr.system_tag
+                and len(messages) != 0
+                and messages[0][self.dataset_attr.role_tag] == self.dataset_attr.system_tag
         ):
             system = messages[0][self.dataset_attr.content_tag]
             messages = messages[1:]
@@ -171,7 +169,7 @@ class SharegptDatasetConverter(DatasetConverter):
             )
 
         if (not self.dataset_attr.ranking and len(aligned_messages) % 2 != 0) or (
-            self.dataset_attr.ranking and len(aligned_messages) % 2 == 0
+                self.dataset_attr.ranking and len(aligned_messages) % 2 == 0
         ):
             logger.warning_rank0(f"Invalid message count in {messages}.")
             broken_data = True
@@ -187,15 +185,15 @@ class SharegptDatasetConverter(DatasetConverter):
             else:
                 response = [{"role": Role.ASSISTANT.value, "content": ""}] + response
         elif (
-            self.dataset_attr.ranking
-            and isinstance(example[self.dataset_attr.chosen], dict)
-            and isinstance(example[self.dataset_attr.rejected], dict)
+                self.dataset_attr.ranking
+                and isinstance(example[self.dataset_attr.chosen], dict)
+                and isinstance(example[self.dataset_attr.rejected], dict)
         ):  # pairwise example
             chosen = example[self.dataset_attr.chosen]
             rejected = example[self.dataset_attr.rejected]
             if (
-                chosen[self.dataset_attr.role_tag] not in accept_tags[-1]
-                or rejected[self.dataset_attr.role_tag] not in accept_tags[-1]
+                    chosen[self.dataset_attr.role_tag] not in accept_tags[-1]
+                    or rejected[self.dataset_attr.role_tag] not in accept_tags[-1]
             ):
                 logger.warning_rank0(f"Invalid role tag in {[chosen, rejected]}.")
                 broken_data = True
@@ -250,10 +248,10 @@ def get_dataset_converter(name: str, dataset_attr: "DatasetAttr", data_args: "Da
 
 
 def align_dataset(
-    dataset: Union["Dataset", "IterableDataset"],
-    dataset_attr: "DatasetAttr",
-    data_args: "DataArguments",
-    training_args: "Seq2SeqTrainingArguments",
+        dataset: Union["Dataset", "IterableDataset"],
+        dataset_attr: "DatasetAttr",
+        data_args: "DataArguments",
+        training_args: "Seq2SeqTrainingArguments",
 ) -> Union["Dataset", "IterableDataset"]:
     r"""Align the dataset to a specific format.
 

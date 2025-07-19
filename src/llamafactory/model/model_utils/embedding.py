@@ -21,10 +21,8 @@ from transformers.integrations import is_deepspeed_zero3_enabled
 
 from ...extras import logging
 
-
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, PreTrainedTokenizer
-
 
 logger = logging.get_logger(__name__)
 

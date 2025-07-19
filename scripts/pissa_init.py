@@ -22,20 +22,19 @@ import fire
 from peft import LoraConfig, TaskType, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-
 if TYPE_CHECKING:
     from transformers import PreTrainedModel
 
 
 def quantize_pissa(
-    model_name_or_path: str,
-    output_dir: str,
-    pissa_iter: int = 16,
-    lora_alpha: int = None,
-    lora_rank: int = 16,
-    lora_dropout: float = 0,
-    lora_target: tuple = ("q_proj", "v_proj"),
-    save_safetensors: bool = True,
+        model_name_or_path: str,
+        output_dir: str,
+        pissa_iter: int = 16,
+        lora_alpha: int = None,
+        lora_rank: int = 16,
+        lora_dropout: float = 0,
+        lora_target: tuple = ("q_proj", "v_proj"),
+        save_safetensors: bool = True,
 ):
     r"""Initialize LoRA weights with Principal Singular values and Singular vectors Adaptation (PiSSA).
 

@@ -22,11 +22,9 @@ from transformers.trainer import TRAINER_STATE_NAME
 from . import logging
 from .packages import is_matplotlib_available
 
-
 if is_matplotlib_available():
     import matplotlib.figure
     import matplotlib.pyplot as plt
-
 
 logger = logging.get_logger(__name__)
 

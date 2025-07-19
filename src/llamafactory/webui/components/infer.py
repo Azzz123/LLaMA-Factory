@@ -14,14 +14,12 @@
 
 from typing import TYPE_CHECKING
 
-from ...extras.packages import is_gradio_available
-from ..common import is_multimodal
 from .chatbot import create_chat_box
-
+from ..common import is_multimodal
+from ...extras.packages import is_gradio_available
 
 if is_gradio_available():
     import gradio as gr
-
 
 if TYPE_CHECKING:
     from gradio.components import Component

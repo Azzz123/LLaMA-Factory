@@ -18,7 +18,6 @@ import os
 import datasets
 import pandas as pd
 
-
 _CITATION = """\
 @article{li2023cmmlu,
   title={CMMLU: Measuring massive multitask language understanding in Chinese},

@@ -26,12 +26,10 @@ from tqdm import tqdm
 from transformers.modeling_utils import SAFE_WEIGHTS_INDEX_NAME, SAFE_WEIGHTS_NAME, WEIGHTS_INDEX_NAME, WEIGHTS_NAME
 from transformers.utils import check_min_version
 
-
 try:
     check_min_version("4.34.0")
 except Exception:
     raise ValueError("Please upgrade `transformers` to 4.34.0")
-
 
 CONFIG_NAME = "config.json"
 
@@ -59,9 +57,9 @@ def save_weight(input_dir: str, output_dir: str, shard_size: str, save_safetenso
                 proj_size = value.size(0) // 3
                 llama_state_dict[key.replace("attn.c_attn", "self_attn.q_proj")] = value[:proj_size, ...]
                 llama_state_dict[key.replace("attn.c_attn", "self_attn.k_proj")] = value[
-                    proj_size : 2 * proj_size, ...
-                ]
-                llama_state_dict[key.replace("attn.c_attn", "self_attn.v_proj")] = value[2 * proj_size :, ...]
+                                                                                   proj_size: 2 * proj_size, ...
+                                                                                   ]
+                llama_state_dict[key.replace("attn.c_attn", "self_attn.v_proj")] = value[2 * proj_size:, ...]
             elif "attn.c_proj" in key:
                 llama_state_dict[key.replace("attn.c_proj", "self_attn.o_proj")] = value
                 llama_state_dict[key.replace("attn.c_proj.weight", "self_attn.o_proj.bias")] = torch.zeros_like(
@@ -142,10 +140,10 @@ def save_config(input_dir: str, output_dir: str, torch_dtype: str):
 
 
 def llamafy_qwen(
-    input_dir: str,
-    output_dir: str,
-    shard_size: str = "2GB",
-    save_safetensors: bool = False,
+        input_dir: str,
+        output_dir: str,
+        shard_size: str = "2GB",
+        save_safetensors: bool = False,
 ):
     r"""Convert the Qwen models in the same format as LLaMA2.
 

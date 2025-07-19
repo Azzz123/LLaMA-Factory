@@ -20,19 +20,17 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from transformers.utils import is_torch_npu_available
 
+from .common import get_save_dir, load_config
+from .locales import ALERTS
 from ..chat import ChatModel
 from ..data import Role
 from ..extras.constants import PEFT_METHODS
 from ..extras.misc import torch_gc
 from ..extras.packages import is_gradio_available
-from .common import get_save_dir, load_config
-from .locales import ALERTS
-
 
 if TYPE_CHECKING:
     from ..chat import BaseEngine
     from .manager import Manager
-
 
 if is_gradio_available():
     import gradio as gr
@@ -173,11 +171,11 @@ class WebChatModel(ChatModel):
 
     @staticmethod
     def append(
-        chatbot: list[dict[str, str]],
-        messages: list[dict[str, str]],
-        role: str,
-        query: str,
-        escape_html: bool,
+            chatbot: list[dict[str, str]],
+            messages: list[dict[str, str]],
+            role: str,
+            query: str,
+            escape_html: bool,
     ) -> tuple[list[dict[str, str]], list[dict[str, str]], str]:
         r"""Add the user input to chatbot.
 
@@ -191,21 +189,21 @@ class WebChatModel(ChatModel):
         )
 
     def stream(
-        self,
-        chatbot: list[dict[str, str]],
-        messages: list[dict[str, str]],
-        lang: str,
-        system: str,
-        tools: str,
-        image: Optional[Any],
-        video: Optional[Any],
-        audio: Optional[Any],
-        max_new_tokens: int,
-        top_p: float,
-        temperature: float,
-        skip_special_tokens: bool,
-        escape_html: bool,
-        enable_thinking: bool,
+            self,
+            chatbot: list[dict[str, str]],
+            messages: list[dict[str, str]],
+            lang: str,
+            system: str,
+            tools: str,
+            image: Optional[Any],
+            video: Optional[Any],
+            audio: Optional[Any],
+            max_new_tokens: int,
+            top_p: float,
+            temperature: float,
+            skip_special_tokens: bool,
+            escape_html: bool,
+            enable_thinking: bool,
     ) -> Generator[tuple[list[dict[str, str]], list[dict[str, str]]], None, None]:
         r"""Generate output text in stream.
 
@@ -216,16 +214,16 @@ class WebChatModel(ChatModel):
             chatbot.append({"role": "assistant", "content": ""})
             response = ""
             for new_text in self.stream_chat(
-                messages,
-                system,
-                tools,
-                images=[image] if image else None,
-                videos=[video] if video else None,
-                audios=[audio] if audio else None,
-                max_new_tokens=max_new_tokens,
-                top_p=top_p,
-                temperature=temperature,
-                skip_special_tokens=skip_special_tokens,
+                    messages,
+                    system,
+                    tools,
+                    images=[image] if image else None,
+                    videos=[video] if video else None,
+                    audios=[audio] if audio else None,
+                    max_new_tokens=max_new_tokens,
+                    top_p=top_p,
+                    temperature=temperature,
+                    skip_special_tokens=skip_special_tokens,
             ):
                 response += new_text
                 if tools:

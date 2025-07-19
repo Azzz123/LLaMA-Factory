@@ -47,12 +47,11 @@ from datasets import load_dataset
 from tqdm import tqdm, trange
 from transformers.utils import cached_file
 
+from .template import get_eval_template
 from ..data import get_template_and_fix_tokenizer
 from ..extras.constants import CHOICES, SUBJECTS
 from ..hparams import get_eval_args
 from ..model import load_model, load_tokenizer
-from .template import get_eval_template
-
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
@@ -119,10 +118,10 @@ class Evaluator:
                 labels.append(messages[-1]["content"])
 
             for i in trange(
-                0, len(inputs), self.eval_args.batch_size, desc="Predicting batches", position=1, leave=False
+                    0, len(inputs), self.eval_args.batch_size, desc="Predicting batches", position=1, leave=False
             ):
                 batch_input = self.tokenizer.pad(
-                    inputs[i : i + self.eval_args.batch_size], return_attention_mask=True, return_tensors="pt"
+                    inputs[i: i + self.eval_args.batch_size], return_attention_mask=True, return_tensors="pt"
                 ).to(self.model.device)
                 preds = self.batch_inference(batch_input)
                 outputs += preds

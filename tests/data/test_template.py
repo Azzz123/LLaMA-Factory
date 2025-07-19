@@ -22,10 +22,8 @@ from llamafactory.data import get_template_and_fix_tokenizer
 from llamafactory.data.template import parse_template
 from llamafactory.hparams import DataArguments
 
-
 if TYPE_CHECKING:
     from transformers import PreTrainedTokenizer
-
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 
@@ -48,7 +46,7 @@ MESSAGES_WITH_THOUGHT = [
 
 
 def _check_tokenization(
-    tokenizer: "PreTrainedTokenizer", batch_input_ids: list[list[int]], batch_text: list[str]
+        tokenizer: "PreTrainedTokenizer", batch_input_ids: list[list[int]], batch_text: list[str]
 ) -> None:
     r"""Check token ids and texts.
 
@@ -61,12 +59,12 @@ def _check_tokenization(
 
 
 def _check_template(
-    model_id: str,
-    template_name: str,
-    prompt_str: str,
-    answer_str: str,
-    use_fast: bool,
-    messages: list[dict[str, str]] = MESSAGES,
+        model_id: str,
+        template_name: str,
+        prompt_str: str,
+        answer_str: str,
+        use_fast: bool,
+        messages: list[dict[str, str]] = MESSAGES,
 ) -> None:
     r"""Check template.
 

@@ -16,14 +16,12 @@ import inspect
 import json
 from typing import TYPE_CHECKING
 
+from ..locales import ALERTS
 from ...data import Role
 from ...extras.packages import is_gradio_available
-from ..locales import ALERTS
-
 
 if is_gradio_available():
     import gradio as gr
-
 
 if TYPE_CHECKING:
     from gradio.components import Component
@@ -47,7 +45,7 @@ def check_json_schema(text: str, lang: str) -> None:
 
 
 def create_chat_box(
-    engine: "Engine", visible: bool = False
+        engine: "Engine", visible: bool = False
 ) -> tuple["Component", "Component", dict[str, "Component"]]:
     lang = engine.manager.get_elem_by_id("top.lang")
     with gr.Column(visible=visible) as chat_box:

@@ -18,10 +18,6 @@ from contextlib import asynccontextmanager
 from functools import partial
 from typing import Annotated, Optional
 
-from ..chat import ChatModel
-from ..extras.constants import EngineName
-from ..extras.misc import torch_gc
-from ..extras.packages import is_fastapi_available, is_starlette_available, is_uvicorn_available
 from .chat import (
     create_chat_completion_response,
     create_score_evaluation_response,
@@ -35,17 +31,18 @@ from .protocol import (
     ScoreEvaluationRequest,
     ScoreEvaluationResponse,
 )
-
+from ..chat import ChatModel
+from ..extras.constants import EngineName
+from ..extras.misc import torch_gc
+from ..extras.packages import is_fastapi_available, is_starlette_available, is_uvicorn_available
 
 if is_fastapi_available():
     from fastapi import Depends, FastAPI, HTTPException, status
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
-
 if is_starlette_available():
     from sse_starlette import EventSourceResponse
-
 
 if is_uvicorn_available():
     import uvicorn

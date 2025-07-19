@@ -21,17 +21,10 @@ on:
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        device:
-          - "cuda"
-          - "npu"
-
     runs-on: ubuntu-latest
 
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.device }}
+      group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
     environment:
@@ -40,10 +33,12 @@ jobs:
 
     steps:
       - name: Free up disk space
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
-        with:
-          tool-cache: true
-          docker-images: false
+        run: |
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache
+          df -h
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,22 +57,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: ${{ github.event_name != 'pull_request' }}
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to Quay
-        if: ${{ github.event_name != 'pull_request' && matrix.device == 'npu' }}
-        uses: docker/login-action@v3
-        with:
-          registry: quay.io
-          username: ${{ vars.QUAY_ASCEND_USERNAME }}
-          password: ${{ secrets.QUAY_ASCEND_TOKEN }}
-
-      - name: Build and push Docker image (CUDA)
-        if: ${{ matrix.device == 'cuda' }}
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -88,21 +74,5 @@ jobs:
           tags: |
             docker.io/hiyouga/llamafactory:latest
             docker.io/hiyouga/llamafactory:${{ steps.version.outputs.tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build and push Docker image (NPU)
-        if: ${{ matrix.device == 'npu' }}
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          file: ./docker/docker-npu/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            docker.io/hiyouga/llamafactory:latest-npu-a2
-            docker.io/hiyouga/llamafactory:${{ steps.version.outputs.tag }}-npu-a2
-            quay.io/ascend/llamafactory:latest-npu-a2
-            quay.io/ascend/llamafactory:${{ steps.version.outputs.tag }}-npu-a2
           cache-from: type=gha
           cache-to: type=gha,mode=max

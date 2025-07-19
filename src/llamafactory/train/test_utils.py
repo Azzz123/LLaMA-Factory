@@ -24,7 +24,6 @@ from ..extras.misc import get_current_device
 from ..hparams import get_infer_args, get_train_args
 from ..model import load_model, load_tokenizer
 
-
 if TYPE_CHECKING:
     from peft import LoraModel
     from transformers import PreTrainedModel
@@ -74,12 +73,12 @@ def load_infer_model(add_valuehead: bool = False, **kwargs) -> "PreTrainedModel"
 
 
 def load_reference_model(
-    model_path: str,
-    lora_path: Optional[str] = None,
-    use_lora: bool = False,
-    use_pissa: bool = False,
-    is_trainable: bool = False,
-    add_valuehead: bool = False,
+        model_path: str,
+        lora_path: Optional[str] = None,
+        use_lora: bool = False,
+        use_pissa: bool = False,
+        is_trainable: bool = False,
+        add_valuehead: bool = False,
 ) -> Union["PreTrainedModel", "LoraModel"]:
     current_device = get_current_device()
     if add_valuehead:

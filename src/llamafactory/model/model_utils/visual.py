@@ -26,12 +26,10 @@ from transformers.activations import ACT2FN
 from ...extras import logging
 from ...extras.packages import is_transformers_version_greater_than
 
-
 if TYPE_CHECKING:
     from transformers import LlavaConfig, PretrainedConfig, PreTrainedModel
 
     from ...hparams import FinetuningArguments, ModelArguments
-
 
 logger = logging.get_logger(__name__)
 transformers_logger = transformers.utils.logging.get_logger(__name__)
@@ -56,11 +54,11 @@ COMPOSITE_MODELS: dict[str, "CompositeModel"] = {}
 
 
 def _register_composite_model(
-    model_type: str,
-    projector_key: Optional[str] = None,
-    vision_model_keys: Optional[list[str]] = None,
-    language_model_keys: Optional[list[str]] = None,
-    lora_conflict_keys: Optional[list[str]] = None,
+        model_type: str,
+        projector_key: Optional[str] = None,
+        vision_model_keys: Optional[list[str]] = None,
+        language_model_keys: Optional[list[str]] = None,
+        lora_conflict_keys: Optional[list[str]] = None,
 ):
     r"""Register a new composite model.
 
@@ -130,7 +128,7 @@ def autocast_projector_dtype(model: "PreTrainedModel", model_args: "ModelArgumen
     r"""Cast projector output to half precision for fine-tuning quantized VLMs."""
 
     def _mm_projector_forward_post_hook(
-        module: "torch.nn.Module", args: tuple["torch.Tensor"], output: "torch.Tensor"
+            module: "torch.nn.Module", args: tuple["torch.Tensor"], output: "torch.Tensor"
     ) -> "torch.Tensor":
         return output.to(model_args.compute_dtype)
 
@@ -180,7 +178,7 @@ def get_forbidden_modules(config: "PretrainedConfig", finetuning_args: "Finetuni
 
 
 def patch_target_modules(
-    model: "PreTrainedModel", finetuning_args: "FinetuningArguments", target_modules: list[str]
+        model: "PreTrainedModel", finetuning_args: "FinetuningArguments", target_modules: list[str]
 ) -> list[str]:
     r"""Freeze vision tower for VLM LoRA tuning."""
     model_type = getattr(model.config, "model_type", None)
@@ -190,7 +188,7 @@ def patch_target_modules(
         module_names = []
         for name, _ in model.named_modules():
             if any(target_module in name for target_module in target_modules) and not any(
-                forbidden_module in name for forbidden_module in forbidden_modules
+                    forbidden_module in name for forbidden_module in forbidden_modules
             ):
                 module_names.append(name)
 
@@ -203,13 +201,11 @@ _register_composite_model(
     model_type="gemma3",
 )
 
-
 _register_composite_model(
     model_type="gemma3n",
     vision_model_keys=["vision_tower", "audio_tower"],
     lora_conflict_keys=["timm_model", "subsample_conv_projection"],
 )
-
 
 # copied from qwen2vl
 _register_composite_model(
@@ -220,32 +216,26 @@ _register_composite_model(
     lora_conflict_keys=["patch_embed"],
 )
 
-
 _register_composite_model(
     model_type="internvl",
 )
-
 
 _register_composite_model(
     model_type="llama4",
     vision_model_keys=["vision_model"],
 )
 
-
 _register_composite_model(
     model_type="llava",
 )
-
 
 _register_composite_model(
     model_type="llava_next",
 )
 
-
 _register_composite_model(
     model_type="llava_next_video",
 )
-
 
 _register_composite_model(
     model_type="minicpmv",
@@ -253,7 +243,6 @@ _register_composite_model(
     vision_model_keys=["vpm"],
     language_model_keys=["llm"],
 )
-
 
 _register_composite_model(
     model_type="minicpmo",
@@ -267,23 +256,19 @@ _register_composite_model(
     model_type="mistral3",
 )
 
-
 _register_composite_model(
     model_type="mllama",
     vision_model_keys=["vision_model"],
 )
 
-
 _register_composite_model(
     model_type="paligemma",
 )
-
 
 _register_composite_model(
     model_type="qwen2_audio",
     vision_model_keys=["audio_tower"],
 )
-
 
 _register_composite_model(
     model_type="qwen2_5_omni_thinker",
@@ -292,7 +277,6 @@ _register_composite_model(
     language_model_keys=["model", "lm_head"],
     lora_conflict_keys=["patch_embed"],
 )
-
 
 _register_composite_model(
     model_type="qwen2_vl",
@@ -304,7 +288,6 @@ _register_composite_model(
     lora_conflict_keys=["patch_embed"],
 )
 
-
 _register_composite_model(
     model_type="qwen2_5_vl",
     projector_key="visual.merger",
@@ -314,7 +297,6 @@ _register_composite_model(
     else ["model", "lm_head"],
     lora_conflict_keys=["patch_embed"],
 )
-
 
 _register_composite_model(
     model_type="video_llava",

@@ -30,12 +30,10 @@ from ...extras import logging
 from ...extras.constants import FILEEXT2TYPE, QuantizationMethod
 from ...extras.misc import check_version, get_current_device
 
-
 if TYPE_CHECKING:
     from transformers import PretrainedConfig, PreTrainedTokenizer
 
     from ...hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 
@@ -72,18 +70,18 @@ def _get_quantization_dataset(tokenizer: "PreTrainedTokenizer", model_args: "Mod
                 break  # TODO: fix large maxlen
 
         word_idx = random.randint(0, sample["input_ids"].size(1) - maxlen - 1)
-        input_ids = sample["input_ids"][:, word_idx : word_idx + maxlen]
-        attention_mask = sample["attention_mask"][:, word_idx : word_idx + maxlen]
+        input_ids = sample["input_ids"][:, word_idx: word_idx + maxlen]
+        attention_mask = sample["attention_mask"][:, word_idx: word_idx + maxlen]
         samples.append({"input_ids": input_ids.tolist(), "attention_mask": attention_mask.tolist()})
 
     return samples
 
 
 def configure_quantization(
-    config: "PretrainedConfig",
-    tokenizer: "PreTrainedTokenizer",
-    model_args: "ModelArguments",
-    init_kwargs: dict[str, Any],
+        config: "PretrainedConfig",
+        tokenizer: "PreTrainedTokenizer",
+        model_args: "ModelArguments",
+        init_kwargs: dict[str, Any],
 ) -> None:
     r"""Priority: PTQ-quantized (train/infer) > AutoGPTQ (export) > On-the-fly quantization (train/infer)."""
     if getattr(config, "quantization_config", None):  # ptq

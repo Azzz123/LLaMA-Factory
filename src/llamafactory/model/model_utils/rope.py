@@ -22,12 +22,10 @@ from typing import TYPE_CHECKING
 from ...extras import logging
 from ...extras.constants import RopeScaling
 
-
 if TYPE_CHECKING:
     from transformers import PretrainedConfig
 
     from ...hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 

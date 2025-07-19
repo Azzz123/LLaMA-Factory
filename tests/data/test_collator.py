@@ -24,7 +24,6 @@ from llamafactory.extras.constants import IGNORE_INDEX
 from llamafactory.hparams import get_infer_args
 from llamafactory.model import load_tokenizer
 
-
 TINY_LLAMA3 = os.getenv("TINY_LLAMA3", "llamafactory/tiny-random-Llama-3")
 
 

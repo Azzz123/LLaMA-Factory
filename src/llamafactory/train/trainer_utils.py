@@ -38,27 +38,22 @@ from ..extras.packages import is_apollo_available, is_galore_available, is_ray_a
 from ..hparams import FinetuningArguments, ModelArguments
 from ..model import find_all_linear_modules, load_model, load_tokenizer, load_valuehead_params
 
-
 if is_galore_available():
     from galore_torch import GaLoreAdafactor, GaLoreAdamW, GaLoreAdamW8bit  # type: ignore
 
-
 if is_apollo_available():
     from apollo_torch import APOLLOAdamW  # type: ignore
-
 
 if is_ray_available():
     import ray
     from ray.train import RunConfig, ScalingConfig
     from ray.train.torch import TorchTrainer
 
-
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, TrainerCallback, TrainerState
     from trl import AutoModelForCausalLMWithValueHead
 
     from ..hparams import DataArguments, RayArguments, TrainingArguments
-
 
 logger = logging.get_logger(__name__)
 
@@ -67,7 +62,7 @@ class DummyOptimizer(torch.optim.Optimizer):
     r"""A dummy optimizer used for the GaLore or APOLLO algorithm."""
 
     def __init__(
-        self, lr: float = 1e-3, optimizer_dict: Optional[dict["torch.nn.Parameter", "torch.optim.Optimizer"]] = None
+            self, lr: float = 1e-3, optimizer_dict: Optional[dict["torch.nn.Parameter", "torch.optim.Optimizer"]] = None
     ) -> None:
         dummy_tensor = torch.randn(1, 1)
         self.optimizer_dict = optimizer_dict
@@ -83,11 +78,11 @@ class DummyOptimizer(torch.optim.Optimizer):
 
 
 def create_modelcard_and_push(
-    trainer: "Trainer",
-    model_args: "ModelArguments",
-    data_args: "DataArguments",
-    training_args: "TrainingArguments",
-    finetuning_args: "FinetuningArguments",
+        trainer: "Trainer",
+        model_args: "ModelArguments",
+        data_args: "DataArguments",
+        training_args: "TrainingArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> None:
     kwargs = {
         "tasks": "text-generation",
@@ -109,7 +104,7 @@ def create_modelcard_and_push(
 
 
 def create_ref_model(
-    model_args: "ModelArguments", finetuning_args: "FinetuningArguments", add_valuehead: bool = False
+        model_args: "ModelArguments", finetuning_args: "FinetuningArguments", add_valuehead: bool = False
 ) -> Optional[Union["PreTrainedModel", "AutoModelForCausalLMWithValueHead"]]:
     r"""Create reference model for PPO/DPO training. Evaluation mode is not supported.
 
@@ -144,7 +139,7 @@ def create_ref_model(
 
 
 def create_reward_model(
-    model: "AutoModelForCausalLMWithValueHead", model_args: "ModelArguments", finetuning_args: "FinetuningArguments"
+        model: "AutoModelForCausalLMWithValueHead", model_args: "ModelArguments", finetuning_args: "FinetuningArguments"
 ) -> Optional["AutoModelForCausalLMWithValueHead"]:
     r"""Create reward model for PPO training."""
     if finetuning_args.reward_model_type == "api":
@@ -193,9 +188,9 @@ def _get_decay_parameter_names(model: "PreTrainedModel") -> list[str]:
 
 
 def _create_galore_optimizer(
-    model: "PreTrainedModel",
-    training_args: "TrainingArguments",
-    finetuning_args: "FinetuningArguments",
+        model: "PreTrainedModel",
+        training_args: "TrainingArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> "torch.optim.Optimizer":
     if len(finetuning_args.galore_target) == 1 and finetuning_args.galore_target[0] == "all":
         galore_targets = find_all_linear_modules(model, finetuning_args.freeze_vision_tower)
@@ -281,9 +276,9 @@ def _create_galore_optimizer(
 
 
 def _create_apollo_optimizer(
-    model: "PreTrainedModel",
-    training_args: "TrainingArguments",
-    finetuning_args: "FinetuningArguments",
+        model: "PreTrainedModel",
+        training_args: "TrainingArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> "torch.optim.Optimizer":
     if len(finetuning_args.apollo_target) == 1 and finetuning_args.apollo_target[0] == "all":
         apollo_targets = find_all_linear_modules(model, finetuning_args.freeze_vision_tower)
@@ -365,9 +360,9 @@ def _create_apollo_optimizer(
 
 
 def _create_loraplus_optimizer(
-    model: "PreTrainedModel",
-    training_args: "TrainingArguments",
-    finetuning_args: "FinetuningArguments",
+        model: "PreTrainedModel",
+        training_args: "TrainingArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> "torch.optim.Optimizer":
     default_lr = training_args.learning_rate
     loraplus_lr = training_args.learning_rate * finetuning_args.loraplus_lr_ratio
@@ -405,9 +400,9 @@ def _create_loraplus_optimizer(
 
 
 def _create_badam_optimizer(
-    model: "PreTrainedModel",
-    training_args: "TrainingArguments",
-    finetuning_args: "FinetuningArguments",
+        model: "PreTrainedModel",
+        training_args: "TrainingArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> "torch.optim.Optimizer":
     decay_params, nodecay_params = [], []
     decay_param_names = _get_decay_parameter_names(model)
@@ -466,8 +461,8 @@ def _create_badam_optimizer(
 
 
 def _create_adam_mini_optimizer(
-    model: "PreTrainedModel",
-    training_args: "TrainingArguments",
+        model: "PreTrainedModel",
+        training_args: "TrainingArguments",
 ) -> "torch.optim.Optimizer":
     from adam_mini import Adam_mini  # type: ignore
 
@@ -491,8 +486,8 @@ def _create_adam_mini_optimizer(
 
 
 def _create_muon_optimizer(
-    model: "PreTrainedModel",
-    training_args: "TrainingArguments",
+        model: "PreTrainedModel",
+        training_args: "TrainingArguments",
 ) -> "torch.optim.Optimizer":
     from ..third_party.muon import Muon
 
@@ -520,9 +515,9 @@ def _create_muon_optimizer(
 
 
 def create_custom_optimizer(
-    model: "PreTrainedModel",
-    training_args: "TrainingArguments",
-    finetuning_args: "FinetuningArguments",
+        model: "PreTrainedModel",
+        training_args: "TrainingArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> Optional["torch.optim.Optimizer"]:
     if finetuning_args.use_galore:
         return _create_galore_optimizer(model, training_args, finetuning_args)
@@ -544,9 +539,9 @@ def create_custom_optimizer(
 
 
 def create_custom_scheduler(
-    training_args: "TrainingArguments",
-    num_training_steps: int,
-    optimizer: Optional["torch.optim.Optimizer"] = None,
+        training_args: "TrainingArguments",
+        num_training_steps: int,
+        optimizer: Optional["torch.optim.Optimizer"] = None,
 ) -> None:
     if training_args.lr_scheduler_type == "warmup_stable_decay":
         num_warmup_steps = training_args.get_warmup_steps(num_training_steps)
@@ -585,10 +580,10 @@ def create_custom_scheduler(
 
 
 def get_batch_logps(
-    logits: "torch.Tensor",
-    labels: "torch.Tensor",
-    label_pad_token_id: int = IGNORE_INDEX,
-    ld_alpha: Optional[float] = None,
+        logits: "torch.Tensor",
+        labels: "torch.Tensor",
+        label_pad_token_id: int = IGNORE_INDEX,
+        ld_alpha: Optional[float] = None,
 ) -> tuple["torch.Tensor", "torch.Tensor"]:
     r"""Compute the log probabilities of the given labels under the given logits.
 
@@ -632,8 +627,8 @@ def get_batch_logps(
 
 
 def nested_detach(
-    tensors: Union["torch.Tensor", list["torch.Tensor"], tuple["torch.Tensor"], dict[str, "torch.Tensor"]],
-    clone: bool = False,
+        tensors: Union["torch.Tensor", list["torch.Tensor"], tuple["torch.Tensor"], dict[str, "torch.Tensor"]],
+        clone: bool = False,
 ):
     r"""Detach `tensors` (even if it's a nested list/tuple/dict of tensors)."""
     if isinstance(tensors, (list, tuple)):
@@ -697,9 +692,9 @@ def get_swanlab_callback(finetuning_args: "FinetuningArguments") -> "TrainerCall
 
 
 def get_ray_trainer(
-    training_function: Callable,
-    train_loop_config: dict[str, Any],
-    ray_args: "RayArguments",
+        training_function: Callable,
+        train_loop_config: dict[str, Any],
+        ray_args: "RayArguments",
 ) -> "TorchTrainer":
     if not ray_args.use_ray:
         raise ValueError("Ray was not enabled. Please set `USE_RAY=1` to enable ray.")

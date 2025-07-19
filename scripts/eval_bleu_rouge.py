@@ -14,11 +14,11 @@
 
 import json
 import logging
+import os
 import time
 
 import fire
 from datasets import load_dataset
-
 
 try:
     import jieba  # type: ignore
@@ -69,10 +69,15 @@ def main(filename: str):
         print(f"{task}: {sum(scores) / len(scores):.4f}")
         average_score[task] = sum(scores) / len(scores)
 
-    with open("predictions_score.json", "w", encoding="utf-8") as f:
+    output_dir = os.path.dirname(filename)
+    if output_dir == "":
+        output_dir = "."
+    save_path = os.path.join(output_dir, "bleu_rouge_score.json")
+
+    with open(save_path, "w", encoding="utf-8") as f:
         json.dump(average_score, f, indent=4)
 
-    print(f"\nDone in {time.time() - start_time:.3f}s.\nScore file saved to predictions_score.json")
+    print(f"\nDone in {time.time() - start_time:.3f}s.\nScore file saved to bleu_rouge_score.json")
 
 
 if __name__ == "__main__":

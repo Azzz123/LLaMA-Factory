@@ -27,37 +27,39 @@ from llamafactory.extras.packages import is_vllm_available
 from llamafactory.hparams import get_infer_args
 from llamafactory.model import load_tokenizer
 
-
 if is_vllm_available():
     from vllm import LLM, SamplingParams
     from vllm.lora.request import LoRARequest
 
+import os  # <<< MODIFICATION START >>>
+import time  # <<< MODIFICATION START >>>
+
 
 def vllm_infer(
-    model_name_or_path: str,
-    adapter_name_or_path: str = None,
-    dataset: str = "alpaca_en_demo",
-    dataset_dir: str = "data",
-    template: str = "default",
-    cutoff_len: int = 2048,
-    max_samples: Optional[int] = None,
-    vllm_config: str = "{}",
-    save_name: str = "generated_predictions.jsonl",
-    temperature: float = 0.95,
-    top_p: float = 0.7,
-    top_k: int = 50,
-    max_new_tokens: int = 1024,
-    repetition_penalty: float = 1.0,
-    skip_special_tokens: bool = True,
-    default_system: Optional[str] = None,
-    enable_thinking: bool = True,
-    seed: Optional[int] = None,
-    pipeline_parallel_size: int = 1,
-    image_max_pixels: int = 768 * 768,
-    image_min_pixels: int = 32 * 32,
-    video_fps: float = 2.0,
-    video_maxlen: int = 128,
-    batch_size: int = 1024,
+        model_name_or_path: str,
+        adapter_name_or_path: str = None,
+        dataset: str = "alpaca_en_demo",
+        dataset_dir: str = "data",
+        template: str = "default",
+        cutoff_len: int = 2048,
+        max_samples: Optional[int] = 20000,
+        vllm_config: str = "{}",
+        save_name: str = "generated_predictions.jsonl",
+        temperature: float = 0.5,
+        top_p: float = 0.7,
+        top_k: int = 50,
+        max_new_tokens: int = 2048,
+        repetition_penalty: float = 1.0,
+        skip_special_tokens: bool = True,
+        default_system: Optional[str] = None,
+        enable_thinking: bool = False,
+        seed: Optional[int] = None,
+        pipeline_parallel_size: int = 1,
+        image_max_pixels: int = 768 * 768,
+        image_min_pixels: int = 32 * 32,
+        video_fps: float = 2.0,
+        video_maxlen: int = 128,
+        batch_size: int = 1024,
 ):
     r"""Perform batch generation using vLLM engine, which supports tensor parallelism.
 
@@ -130,13 +132,20 @@ def vllm_infer(
     else:
         lora_request = None
 
+    # <<< MODIFICATION START >>>
+    # --- Performance Metrics Initialization ---
+    start_time = time.time()
+    total_input_tokens = 0
+    total_output_tokens = 0
+    # <<< MODIFICATION END >>>
+
     # Store all results in these lists
     all_prompts, all_preds, all_labels = [], [], []
 
     # Add batch process to avoid the issue of too many files opened
     for i in tqdm(range(0, len(train_dataset), batch_size), desc="Processing batched inference"):
         vllm_inputs, prompts, labels = [], [], []
-        batch = train_dataset[i : min(i + batch_size, len(train_dataset))]
+        batch = train_dataset[i: min(i + batch_size, len(train_dataset))]
 
         for j in range(len(batch["input_ids"])):
             if batch["images"][j] is not None:
@@ -176,14 +185,66 @@ def vllm_infer(
                 )
             )
 
+            # <<< MODIFICATION START >>>
+            total_input_tokens += len(batch["input_ids"][j])
+            # <<< MODIFICATION END >>>
+
         results = llm.generate(vllm_inputs, sampling_params, lora_request=lora_request)
         preds = [result.outputs[0].text for result in results]
+
+        # <<< MODIFICATION START >>>
+        for pred_text in preds:
+            total_output_tokens += len(tokenizer.encode(pred_text))
+        # <<< MODIFICATION END >>>
 
         # Accumulate results
         all_prompts.extend(prompts)
         all_preds.extend(preds)
         all_labels.extend(labels)
         gc.collect()
+
+    # <<< MODIFICATION START >>>
+    # --- Performance Metrics Calculation & Saving ---
+    end_time = time.time()
+    total_time_seconds = end_time - start_time
+    num_samples = len(all_prompts)
+
+    samples_per_second = num_samples / total_time_seconds if total_time_seconds > 0 else 0
+    output_tokens_per_second = total_output_tokens / total_time_seconds if total_time_seconds > 0 else 0
+    total_tokens_per_second = (
+                                      total_input_tokens + total_output_tokens) / total_time_seconds if total_time_seconds > 0 else 0
+
+    performance_metrics = {
+        "num_samples": num_samples,
+        "total_time_seconds": round(total_time_seconds, 2),
+        "avg_input_tokens": round(total_input_tokens / num_samples, 2) if num_samples > 0 else 0,
+        "avg_output_tokens": round(total_output_tokens / num_samples, 2) if num_samples > 0 else 0,
+        "samples_per_second": round(samples_per_second, 2),
+        "output_tokens_per_second": round(output_tokens_per_second, 2),
+        "total_tokens_per_second": round(total_tokens_per_second, 2),
+    }
+
+    # Determine the directory of the dataset to save the metrics file
+    # This assumes `dataset` is a file path in your case.
+    # If `dataset` is a name, you might need to adjust this logic based on `dataset_dir`.
+    try:
+        dataset_file_path = data_args.dataset_path
+        if dataset_file_path:
+            output_dir = os.path.dirname(dataset_file_path)
+            metrics_save_path = os.path.join(output_dir, f"inference_metrics_{os.path.basename(save_name)}.json")
+        else:  # Fallback
+            metrics_save_path = f"inference_metrics_{os.path.basename(save_name)}.json"
+    except Exception:
+        metrics_save_path = f"inference_metrics_{os.path.basename(save_name)}.json"
+
+    with open(metrics_save_path, "w", encoding="utf-8") as f:
+        json.dump(performance_metrics, f, indent=4, ensure_ascii=False)
+
+    print("\n--- Inference Performance Metrics ---")
+    print(json.dumps(performance_metrics, indent=4))
+    print(f"Performance metrics saved to: {metrics_save_path}")
+    print("-" * 35)
+    # <<< MODIFICATION END >>>
 
     # Write all results at once outside the loop
     with open(save_name, "w", encoding="utf-8") as f:

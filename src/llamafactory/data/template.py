@@ -19,11 +19,10 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from typing_extensions import override
 
-from ..extras import logging
 from .data_utils import Role
 from .formatter import EmptyFormatter, FunctionFormatter, StringFormatter, ToolFormatter
 from .mm_plugin import get_mm_plugin
-
+from ..extras import logging
 
 if TYPE_CHECKING:
     from transformers import PreTrainedTokenizer
@@ -32,7 +31,6 @@ if TYPE_CHECKING:
     from .formatter import SLOTS, Formatter
     from .mm_plugin import BasePlugin
     from .tool_utils import FunctionCall
-
 
 logger = logging.get_logger(__name__)
 
@@ -56,11 +54,11 @@ class Template:
     mm_plugin: "BasePlugin"
 
     def encode_oneturn(
-        self,
-        tokenizer: "PreTrainedTokenizer",
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
+            self,
+            tokenizer: "PreTrainedTokenizer",
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
     ) -> tuple[list[int], list[int]]:
         r"""Return a single pair of token ids representing prompt and response respectively."""
         encoded_messages = self._encode(tokenizer, messages, system, tools)
@@ -72,11 +70,11 @@ class Template:
         return prompt_ids, response_ids
 
     def encode_multiturn(
-        self,
-        tokenizer: "PreTrainedTokenizer",
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
+            self,
+            tokenizer: "PreTrainedTokenizer",
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
     ) -> list[tuple[list[int], list[int]]]:
         r"""Return multiple pairs of token ids representing prompts and responses respectively."""
         encoded_messages = self._encode(tokenizer, messages, system, tools)
@@ -127,11 +125,11 @@ class Template:
         return token_ids
 
     def _encode(
-        self,
-        tokenizer: "PreTrainedTokenizer",
-        messages: list[dict[str, str]],
-        system: Optional[str],
-        tools: Optional[str],
+            self,
+            tokenizer: "PreTrainedTokenizer",
+            messages: list[dict[str, str]],
+            system: Optional[str],
+            tools: Optional[str],
     ) -> list[list[int]]:
         r"""Encode formatted inputs to pairs of token ids.
 
@@ -248,17 +246,17 @@ class Template:
             jinja_template += "{% set system_message = '" + self._jinja_escape(self.default_system) + "' %}"
 
         jinja_template += (
-            "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}"
-            "{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% endif %}"
-            "{% if system_message is defined %}{{ " + system + " }}{% endif %}"
-            "{% for message in loop_messages %}"
-            "{% set content = message['content'] %}"
-            "{% if message['role'] == 'user' %}"
-            "{{ " + user + " }}"
-            "{% elif message['role'] == 'assistant' %}"
-            "{{ " + assistant + " }}"
-            "{% endif %}"
-            "{% endfor %}"
+                "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}"
+                "{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% endif %}"
+                "{% if system_message is defined %}{{ " + system + " }}{% endif %}"
+                                                                   "{% for message in loop_messages %}"
+                                                                   "{% set content = message['content'] %}"
+                                                                   "{% if message['role'] == 'user' %}"
+                                                                   "{{ " + user + " }}"
+                                                                                  "{% elif message['role'] == 'assistant' %}"
+                                                                                  "{{ " + assistant + " }}"
+                                                                                                      "{% endif %}"
+                                                                                                      "{% endfor %}"
         )
         return jinja_template
 
@@ -272,7 +270,7 @@ class Template:
 
     @staticmethod
     def _convert_slots_to_ollama(
-        slots: "SLOTS", tokenizer: "PreTrainedTokenizer", placeholder: str = "content"
+            slots: "SLOTS", tokenizer: "PreTrainedTokenizer", placeholder: str = "content"
     ) -> str:
         r"""Convert slots to ollama template."""
         slot_items = []
@@ -331,11 +329,11 @@ class Llama2Template(Template):
 
     @override
     def _encode(
-        self,
-        tokenizer: "PreTrainedTokenizer",
-        messages: list[dict[str, str]],
-        system: str,
-        tools: str,
+            self,
+            tokenizer: "PreTrainedTokenizer",
+            messages: list[dict[str, str]],
+            system: str,
+            tools: str,
     ) -> list[list[int]]:
         system = system or self.default_system
         encoded_messages = []
@@ -379,18 +377,18 @@ class Llama2Template(Template):
             jinja_template += "{% set system_message = '" + self._jinja_escape(self.default_system) + "' %}"
 
         jinja_template += (
-            "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}"
-            "{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% endif %}"
-            "{% for message in loop_messages %}"
-            "{% if loop.index0 == 0 and system_message is defined %}"
-            "{% set content = " + system_message + " + message['content'] %}"
-            "{% else %}{% set content = message['content'] %}{% endif %}"
-            "{% if message['role'] == 'user' %}"
-            "{{ " + user_message + " }}"
-            "{% elif message['role'] == 'assistant' %}"
-            "{{ " + assistant_message + " }}"
-            "{% endif %}"
-            "{% endfor %}"
+                "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}"
+                "{% set system_message = messages[0]['content'] %}{% else %}{% set loop_messages = messages %}{% endif %}"
+                "{% for message in loop_messages %}"
+                "{% if loop.index0 == 0 and system_message is defined %}"
+                "{% set content = " + system_message + " + message['content'] %}"
+                                                       "{% else %}{% set content = message['content'] %}{% endif %}"
+                                                       "{% if message['role'] == 'user' %}"
+                                                       "{{ " + user_message + " }}"
+                                                                              "{% elif message['role'] == 'assistant' %}"
+                                                                              "{{ " + assistant_message + " }}"
+                                                                                                          "{% endif %}"
+                                                                                                          "{% endfor %}"
         )
         return jinja_template
 
@@ -401,11 +399,11 @@ class ReasoningTemplate(Template):
 
     @override
     def encode_oneturn(
-        self,
-        tokenizer: "PreTrainedTokenizer",
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
+            self,
+            tokenizer: "PreTrainedTokenizer",
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
     ) -> tuple[list[int], list[int]]:
         messages = deepcopy(messages)
         for i in range(1, len(messages) - 2, 2):
@@ -416,8 +414,8 @@ class ReasoningTemplate(Template):
 
         prompt_ids, response_ids = super().encode_oneturn(tokenizer, messages, system, tools)
         if (
-            self.thought_words[0] not in messages[-1]["content"]
-            and self.thought_words[1] not in messages[-1]["content"]
+                self.thought_words[0] not in messages[-1]["content"]
+                and self.thought_words[1] not in messages[-1]["content"]
         ):  # add empty cot
             if not self.enable_thinking:  # do not compute loss
                 prompt_ids += self.get_thought_word_ids(tokenizer)
@@ -428,11 +426,11 @@ class ReasoningTemplate(Template):
 
     @override
     def encode_multiturn(
-        self,
-        tokenizer: "PreTrainedTokenizer",
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
+            self,
+            tokenizer: "PreTrainedTokenizer",
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
     ) -> list[tuple[list[int], list[int]]]:
         messages = deepcopy(messages)
         if self.enable_thinking is False:  # remove all cot
@@ -442,8 +440,8 @@ class ReasoningTemplate(Template):
         encoded_messages = self._encode(tokenizer, messages, system, tools)
         for i in range(0, len(messages), 2):
             if (
-                self.thought_words[0] not in messages[i + 1]["content"]
-                and self.thought_words[1] not in messages[i + 1]["content"]
+                    self.thought_words[0] not in messages[i + 1]["content"]
+                    and self.thought_words[1] not in messages[i + 1]["content"]
             ):  # add empty cot
                 if not self.enable_thinking:  # do not compute loss
                     encoded_messages[i] += self.get_thought_word_ids(tokenizer)
@@ -457,23 +455,23 @@ TEMPLATES: dict[str, "Template"] = {}
 
 
 def register_template(
-    name: str,
-    format_user: Optional["Formatter"] = None,
-    format_assistant: Optional["Formatter"] = None,
-    format_system: Optional["Formatter"] = None,
-    format_function: Optional["Formatter"] = None,
-    format_observation: Optional["Formatter"] = None,
-    format_tools: Optional["Formatter"] = None,
-    format_prefix: Optional["Formatter"] = None,
-    default_system: str = "",
-    stop_words: Optional[list[str]] = None,
-    thought_words: Optional[tuple[str, str]] = None,
-    efficient_eos: bool = False,
-    replace_eos: bool = False,
-    replace_jinja_template: bool = False,
-    enable_thinking: Optional[bool] = True,
-    mm_plugin: "BasePlugin" = get_mm_plugin(name="base"),
-    template_class: type["Template"] = Template,
+        name: str,
+        format_user: Optional["Formatter"] = None,
+        format_assistant: Optional["Formatter"] = None,
+        format_system: Optional["Formatter"] = None,
+        format_function: Optional["Formatter"] = None,
+        format_observation: Optional["Formatter"] = None,
+        format_tools: Optional["Formatter"] = None,
+        format_prefix: Optional["Formatter"] = None,
+        default_system: str = "",
+        stop_words: Optional[list[str]] = None,
+        thought_words: Optional[tuple[str, str]] = None,
+        efficient_eos: bool = False,
+        replace_eos: bool = False,
+        replace_jinja_template: bool = False,
+        enable_thinking: Optional[bool] = True,
+        mm_plugin: "BasePlugin" = get_mm_plugin(name="base"),
+        template_class: type["Template"] = Template,
 ) -> None:
     r"""Register a chat template.
 
@@ -546,26 +544,26 @@ def parse_template(tokenizer: "PreTrainedTokenizer") -> "Template":
     prefix = tokenizer.decode(tokenizer.encode(""))
 
     messages = [{"role": "system", "content": "{{content}}"}]
-    system_slot = tokenizer.apply_chat_template(messages, add_generation_prompt=False, tokenize=False)[len(prefix) :]
+    system_slot = tokenizer.apply_chat_template(messages, add_generation_prompt=False, tokenize=False)[len(prefix):]
 
     messages = [{"role": "system", "content": ""}, {"role": "user", "content": "{{content}}"}]
     user_slot_empty_system = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
-    user_slot_empty_system = user_slot_empty_system[len(prefix) :]
+    user_slot_empty_system = user_slot_empty_system[len(prefix):]
 
     messages = [{"role": "user", "content": "{{content}}"}]
     user_slot = tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
-    user_slot = user_slot[len(prefix) :]
+    user_slot = user_slot[len(prefix):]
 
     messages = [{"role": "user", "content": "{{content}}"}, {"role": "assistant", "content": "{{content}}"}]
     assistant_slot = tokenizer.apply_chat_template(messages, add_generation_prompt=False, tokenize=False)
-    assistant_slot = assistant_slot[len(prefix) + len(user_slot) :]
+    assistant_slot = assistant_slot[len(prefix) + len(user_slot):]
     template_class = ReasoningTemplate if "<think>" in assistant_slot else Template
     assistant_slot = assistant_slot.replace("<think>", "").replace("</think>", "").lstrip("\n")  # remove thought tags
 
     if len(user_slot) > len(user_slot_empty_system):
         default_system = find_diff(user_slot_empty_system, user_slot)
         sole_system = system_slot.replace("{{content}}", default_system, 1)
-        user_slot = user_slot[len(sole_system) :]
+        user_slot = user_slot[len(sole_system):]
     else:  # if defaut_system is empty, user_slot_empty_system will be longer than user_slot
         default_system = ""
 
@@ -632,7 +630,6 @@ register_template(
     replace_jinja_template=True,
 )
 
-
 register_template(
     name="aquila",
     format_user=StringFormatter(slots=["Human: {{content}}###Assistant:"]),
@@ -645,7 +642,6 @@ register_template(
     stop_words=["</s>"],
 )
 
-
 register_template(
     name="atom",
     format_user=StringFormatter(
@@ -654,20 +650,17 @@ register_template(
     format_assistant=StringFormatter(slots=["{{content}}\n", {"eos_token"}]),
 )
 
-
 register_template(
     name="baichuan",
     format_user=StringFormatter(slots=[{"token": "<reserved_102>"}, "{{content}}", {"token": "<reserved_103>"}]),
     efficient_eos=True,
 )
 
-
 register_template(
     name="baichuan2",
     format_user=StringFormatter(slots=["<reserved_106>{{content}}<reserved_107>"]),
     efficient_eos=True,
 )
-
 
 register_template(
     name="bailing",
@@ -678,7 +671,6 @@ register_template(
     efficient_eos=True,
 )
 
-
 register_template(
     name="belle",
     format_user=StringFormatter(slots=["Human: {{content}}\n\nBelle: "]),
@@ -686,12 +678,10 @@ register_template(
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
 )
 
-
 register_template(
     name="bluelm",
     format_user=StringFormatter(slots=[{"token": "[|Human|]:"}, "{{content}}", {"token": "[|AI|]:"}]),
 )
-
 
 register_template(
     name="breeze",
@@ -700,14 +690,12 @@ register_template(
     efficient_eos=True,
 )
 
-
 register_template(
     name="chatglm2",
     format_user=StringFormatter(slots=["[Round {{idx}}]\n\n问：{{content}}\n\n答："]),
     format_prefix=EmptyFormatter(slots=[{"token": "[gMASK]"}, {"token": "sop"}]),
     efficient_eos=True,
 )
-
 
 register_template(
     name="chatglm3",
@@ -724,7 +712,6 @@ register_template(
     efficient_eos=True,
 )
 
-
 register_template(
     name="chatml",
     format_user=StringFormatter(slots=["<|im_start|>user\n{{content}}<|im_end|>\n<|im_start|>assistant\n"]),
@@ -735,7 +722,6 @@ register_template(
     replace_eos=True,
     replace_jinja_template=True,
 )
-
 
 # copied from chatml template
 register_template(
@@ -750,12 +736,10 @@ register_template(
     replace_jinja_template=True,
 )
 
-
 register_template(
     name="codegeex2",
     format_prefix=EmptyFormatter(slots=[{"token": "[gMASK]"}, {"token": "sop"}]),
 )
-
 
 register_template(
     name="codegeex4",
@@ -773,7 +757,6 @@ register_template(
     efficient_eos=True,
 )
 
-
 register_template(
     name="cohere",
     format_user=StringFormatter(
@@ -788,13 +771,11 @@ register_template(
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
 )
 
-
 register_template(
     name="cpm",
     format_user=StringFormatter(slots=["<用户>{{content}}<AI>"]),
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
 )
-
 
 # copied from chatml template
 register_template(
@@ -807,7 +788,6 @@ register_template(
     stop_words=["<|im_end|>"],
 )
 
-
 # copied from chatml template
 register_template(
     name="cpm4",
@@ -818,7 +798,6 @@ register_template(
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
     stop_words=["<|im_end|>"],
 )
-
 
 # copied from chatml template
 register_template(
@@ -846,7 +825,6 @@ register_template(
     replace_eos=True,
 )
 
-
 register_template(
     name="deepseek",
     format_user=StringFormatter(slots=["User: {{content}}\n\nAssistant:"]),
@@ -854,13 +832,11 @@ register_template(
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
 )
 
-
 register_template(
     name="deepseek3",
     format_user=StringFormatter(slots=["<｜User｜>{{content}}<｜Assistant｜>"]),
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
 )
-
 
 # copied from deepseek3 template
 register_template(
@@ -869,7 +845,6 @@ register_template(
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
     template_class=ReasoningTemplate,
 )
-
 
 register_template(
     name="deepseekcoder",
@@ -884,7 +859,6 @@ register_template(
     ),
 )
 
-
 register_template(
     name="default",
     format_user=StringFormatter(slots=["Human: {{content}}", {"eos_token"}, "\nAssistant:"]),
@@ -893,12 +867,10 @@ register_template(
     replace_jinja_template=True,
 )
 
-
 register_template(
     name="empty",
     format_assistant=StringFormatter(slots=["{{content}}"]),
 )
-
 
 register_template(
     name="exaone",
@@ -907,14 +879,12 @@ register_template(
     format_system=StringFormatter(slots=["[|system|]{{content}}[|endofturn|]\n"]),
 )
 
-
 register_template(
     name="falcon",
     format_user=StringFormatter(slots=["User: {{content}}\nFalcon:"]),
     format_assistant=StringFormatter(slots=["{{content}}\n"]),
     efficient_eos=True,
 )
-
 
 # copied from chatml template
 register_template(
@@ -927,14 +897,12 @@ register_template(
     stop_words=["<|im_end|>", "<|end_of_text|>"],
 )
 
-
 register_template(
     name="fewshot",
     format_assistant=StringFormatter(slots=["{{content}}\n\n"]),
     efficient_eos=True,
     replace_jinja_template=True,
 )
-
 
 register_template(
     name="gemma",
@@ -950,7 +918,6 @@ register_template(
     template_class=Llama2Template,
 )
 
-
 # copied from gemma template
 register_template(
     name="gemma2",
@@ -965,7 +932,6 @@ register_template(
     efficient_eos=True,
     template_class=Llama2Template,
 )
-
 
 # copied from gemma template
 register_template(
@@ -983,7 +949,6 @@ register_template(
     template_class=Llama2Template,
 )
 
-
 register_template(
     name="gemma3n",
     format_user=StringFormatter(slots=["<start_of_turn>user\n{{content}}<end_of_turn>\n<start_of_turn>model\n"]),
@@ -999,7 +964,6 @@ register_template(
     template_class=Llama2Template,
 )
 
-
 register_template(
     name="glm4",
     format_user=StringFormatter(slots=["<|user|>\n{{content}}<|assistant|>"]),
@@ -1012,7 +976,6 @@ register_template(
     stop_words=["<|user|>", "<|observation|>"],
     efficient_eos=True,
 )
-
 
 # copied from glm4 template
 register_template(
@@ -1030,7 +993,6 @@ register_template(
     template_class=ReasoningTemplate,
 )
 
-
 # copied from glm4 template
 register_template(
     name="glmz1",
@@ -1046,7 +1008,6 @@ register_template(
     template_class=ReasoningTemplate,
 )
 
-
 register_template(
     name="granite3",
     format_user=StringFormatter(
@@ -1057,7 +1018,6 @@ register_template(
     format_assistant=StringFormatter(slots=["{{content}}<|end_of_text|>\n"]),
     format_system=StringFormatter(slots=["<|start_of_role|>system<|end_of_role|>{{content}}<|end_of_text|>\n"]),
 )
-
 
 register_template(
     name="granite3_vision",
@@ -1070,14 +1030,12 @@ register_template(
     mm_plugin=get_mm_plugin(name="llava_next", image_token="<image>"),
 )
 
-
 register_template(
     name="index",
     format_user=StringFormatter(slots=["reserved_0{{content}}reserved_1"]),
     format_system=StringFormatter(slots=["<unk>{{content}}"]),
     efficient_eos=True,
 )
-
 
 register_template(
     name="hunyuan",
@@ -1087,7 +1045,6 @@ register_template(
     format_prefix=EmptyFormatter(slots=["<|bos|>"]),
     stop_words=["<|eos|>"],
 )
-
 
 register_template(
     name="intern",
@@ -1105,7 +1062,6 @@ register_template(
     stop_words=["<eoa>"],
 )
 
-
 register_template(
     name="intern2",
     format_user=StringFormatter(slots=["<|im_start|>user\n{{content}}<|im_end|>\n<|im_start|>assistant\n"]),
@@ -1122,7 +1078,6 @@ register_template(
     stop_words=["<|im_end|>"],
 )
 
-
 register_template(
     name="intern_vl",
     format_user=StringFormatter(slots=["<|im_start|>user\n{{content}}<|im_end|>\n<|im_start|>assistant\n"]),
@@ -1135,7 +1090,6 @@ register_template(
     stop_words=["<|im_end|>"],
     mm_plugin=get_mm_plugin(name="intern_vl", image_token="<image>", video_token="<video>"),
 )
-
 
 register_template(
     name="kimi_vl",
@@ -1151,14 +1105,12 @@ register_template(
     template_class=ReasoningTemplate,
 )
 
-
 register_template(
     name="llama2",
     format_user=StringFormatter(slots=[{"bos_token"}, "[INST] {{content}} [/INST]"]),
     format_system=StringFormatter(slots=["<<SYS>>\n{{content}}\n<</SYS>>\n\n"]),
     template_class=Llama2Template,
 )
-
 
 # copied from llama2 template
 register_template(
@@ -1168,7 +1120,6 @@ register_template(
     default_system="You are a helpful assistant. 你是一个乐于助人的助手。",
     template_class=Llama2Template,
 )
-
 
 register_template(
     name="llama3",
@@ -1197,7 +1148,6 @@ register_template(
     replace_eos=True,
 )
 
-
 register_template(
     name="llama4",
     format_user=StringFormatter(
@@ -1217,7 +1167,6 @@ register_template(
     replace_eos=True,
     mm_plugin=get_mm_plugin(name="llama4", image_token="<|image|>"),
 )
-
 
 # copied from llama3 template
 register_template(
@@ -1248,7 +1197,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="mllama", image_token="<|image|>"),
 )
 
-
 register_template(
     name="moonlight",
     format_user=StringFormatter(
@@ -1261,7 +1209,6 @@ register_template(
     replace_eos=True,
 )
 
-
 # copied from vicuna template
 register_template(
     name="llava",
@@ -1273,7 +1220,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="llava", image_token="<image>"),
 )
 
-
 # copied from vicuna template
 register_template(
     name="llava_next",
@@ -1284,7 +1230,6 @@ register_template(
     ),
     mm_plugin=get_mm_plugin(name="llava_next", image_token="<image>"),
 )
-
 
 # copied from llama3 template
 register_template(
@@ -1315,7 +1260,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="llava_next", image_token="<image>"),
 )
 
-
 # copied from mistral template
 register_template(
     name="llava_next_mistral",
@@ -1329,7 +1273,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="llava_next", image_token="<image>"),
     template_class=Llama2Template,
 )
-
 
 # copied from qwen template
 register_template(
@@ -1348,7 +1291,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="llava_next", image_token="<image>"),
 )
 
-
 # copied from chatml template
 register_template(
     name="llava_next_yi",
@@ -1358,7 +1300,6 @@ register_template(
     stop_words=["<|im_end|>"],
     mm_plugin=get_mm_plugin(name="llava_next", image_token="<image>"),
 )
-
 
 # copied from vicuna template
 register_template(
@@ -1370,7 +1311,6 @@ register_template(
     ),
     mm_plugin=get_mm_plugin(name="llava_next_video", image_token="<image>", video_token="<video>"),
 )
-
 
 # copied from mistral template
 register_template(
@@ -1386,7 +1326,6 @@ register_template(
     template_class=Llama2Template,
 )
 
-
 # copied from chatml template
 register_template(
     name="llava_next_video_yi",
@@ -1396,7 +1335,6 @@ register_template(
     stop_words=["<|im_end|>"],
     mm_plugin=get_mm_plugin(name="llava_next_video", image_token="<image>", video_token="<video>"),
 )
-
 
 # copied from chatml template
 register_template(
@@ -1413,7 +1351,6 @@ register_template(
     ),
     stop_words=["<|im_end|>"],
 )
-
 
 # copied from qwen template
 register_template(
@@ -1450,7 +1387,6 @@ register_template(
     template_class=ReasoningTemplate,
 )
 
-
 # copied from chatml template
 register_template(
     name="minicpm_v",
@@ -1461,7 +1397,6 @@ register_template(
     default_system="You are a helpful assistant.",
     mm_plugin=get_mm_plugin(name="minicpm_v", image_token="<image>", video_token="<video>"),
 )
-
 
 # copied from minicpm_v template
 register_template(
@@ -1474,7 +1409,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="minicpm_v", image_token="<image>", video_token="<video>", audio_token="<audio>"),
 )
 
-
 # mistral tokenizer v3 tekken
 register_template(
     name="ministral",
@@ -1486,7 +1420,6 @@ register_template(
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
     template_class=Llama2Template,
 )
-
 
 # mistral tokenizer v3
 register_template(
@@ -1501,7 +1434,6 @@ register_template(
     template_class=Llama2Template,
 )
 
-
 # mistral tokenizer v7 tekken (copied from ministral)
 register_template(
     name="mistral_small",
@@ -1514,20 +1446,17 @@ register_template(
     mm_plugin=get_mm_plugin(name="pixtral", image_token="[IMG]"),
 )
 
-
 register_template(
     name="olmo",
     format_user=StringFormatter(slots=["<|user|>\n{{content}}<|assistant|>\n"]),
     format_prefix=EmptyFormatter(slots=[{"eos_token"}]),
 )
 
-
 register_template(
     name="openchat",
     format_user=StringFormatter(slots=["GPT4 Correct User: {{content}}", {"eos_token"}, "GPT4 Correct Assistant:"]),
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
 )
-
 
 register_template(
     name="openchat-3.6",
@@ -1543,7 +1472,6 @@ register_template(
     stop_words=["<|eot_id|>"],
 )
 
-
 # copied from chatml template
 register_template(
     name="opencoder",
@@ -1555,13 +1483,11 @@ register_template(
     stop_words=["<|im_end|>"],
 )
 
-
 register_template(
     name="orion",
     format_user=StringFormatter(slots=["Human: {{content}}\n\nAssistant: ", {"eos_token"}]),
     format_prefix=EmptyFormatter(slots=[{"bos_token"}]),
 )
-
 
 register_template(
     name="paligemma",
@@ -1570,7 +1496,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="paligemma", image_token="<image>"),
     template_class=Llama2Template,
 )
-
 
 # copied from gemma template
 register_template(
@@ -1587,7 +1512,6 @@ register_template(
     template_class=Llama2Template,
 )
 
-
 register_template(
     name="phi",
     format_user=StringFormatter(slots=["<|user|>\n{{content}}<|end|>\n<|assistant|>\n"]),
@@ -1596,7 +1520,6 @@ register_template(
     stop_words=["<|end|>"],
     replace_eos=True,
 )
-
 
 register_template(
     name="phi_small",
@@ -1608,7 +1531,6 @@ register_template(
     replace_eos=True,
 )
 
-
 register_template(
     name="phi4",
     format_user=StringFormatter(
@@ -1619,7 +1541,6 @@ register_template(
     stop_words=["<|im_end|>"],
     replace_eos=True,
 )
-
 
 # copied from ministral template
 register_template(
@@ -1633,7 +1554,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="pixtral", image_token="[IMG]"),
     template_class=Llama2Template,
 )
-
 
 # copied from chatml template
 register_template(
@@ -1651,7 +1571,6 @@ register_template(
     replace_eos=True,
 )
 
-
 # copied from qwen template
 register_template(
     name="qwen3",
@@ -1668,7 +1587,6 @@ register_template(
     template_class=ReasoningTemplate,
 )
 
-
 # copied from chatml template
 register_template(
     name="qwen2_audio",
@@ -1680,7 +1598,6 @@ register_template(
     replace_eos=True,
     mm_plugin=get_mm_plugin(name="qwen2_audio", audio_token="<|AUDIO|>"),
 )
-
 
 # copied from qwen template
 register_template(
@@ -1718,7 +1635,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="qwen2_vl", image_token="<|image_pad|>", video_token="<|video_pad|>"),
 )
 
-
 register_template(
     name="sailor",
     format_user=StringFormatter(slots=["<|im_start|>question\n{{content}}<|im_end|>\n<|im_start|>answer\n"]),
@@ -1730,7 +1646,6 @@ register_template(
     ),
     stop_words=["<|im_end|>"],
 )
-
 
 register_template(
     name="seed_coder",
@@ -1744,7 +1659,6 @@ register_template(
         "security and privacy issues, and other non-computer science questions, you will refuse to answer.\n\n"
     ),
 )
-
 
 # copied from llama3 template
 register_template(
@@ -1780,7 +1694,6 @@ register_template(
     stop_words=["<|eot_id|>", "<|eom_id|>"],
 )
 
-
 register_template(
     name="smollm",
     format_user=StringFormatter(slots=["<|im_start|>user\n{{content}}<|im_end|>\n<|im_start|>assistant\n"]),
@@ -1788,7 +1701,6 @@ register_template(
     format_system=StringFormatter(slots=["<|im_start|>system\n{{content}}<|im_end|>\n"]),
     stop_words=["<|im_end|>"],
 )
-
 
 register_template(
     name="smollm2",
@@ -1799,14 +1711,12 @@ register_template(
     default_system="You are a helpful AI assistant named SmolLM, trained by Hugging Face.",
 )
 
-
 register_template(
     name="solar",
     format_user=StringFormatter(slots=["### User:\n{{content}}\n\n### Assistant:\n"]),
     format_system=StringFormatter(slots=["### System:\n{{content}}\n\n"]),
     efficient_eos=True,
 )
-
 
 register_template(
     name="starchat",
@@ -1816,13 +1726,11 @@ register_template(
     stop_words=["<|end|>"],
 )
 
-
 register_template(
     name="telechat",
     format_user=StringFormatter(slots=["<_user>{{content}}<_bot>"]),
     format_system=StringFormatter(slots=["<_system>{{content}}<_end>"]),
 )
-
 
 register_template(
     name="telechat2",
@@ -1832,7 +1740,6 @@ register_template(
         "你是中国电信星辰语义大模型，英文名是TeleChat，你是由中电信人工智能科技有限公司和中国电信人工智能研究院（TeleAI）研发的人工智能助手。"
     ),
 )
-
 
 register_template(
     name="vicuna",
@@ -1844,7 +1751,6 @@ register_template(
     replace_jinja_template=True,
 )
 
-
 register_template(
     name="video_llava",
     format_user=StringFormatter(slots=["USER: {{content}} ASSISTANT:"]),
@@ -1854,7 +1760,6 @@ register_template(
     ),
     mm_plugin=get_mm_plugin(name="video_llava", image_token="<image>", video_token="<video>"),
 )
-
 
 register_template(
     name="xuanyuan",
@@ -1866,12 +1771,10 @@ register_template(
     ),
 )
 
-
 register_template(
     name="xverse",
     format_user=StringFormatter(slots=["Human: {{content}}\n\nAssistant: "]),
 )
-
 
 register_template(
     name="yayi",
@@ -1892,7 +1795,6 @@ register_template(
     stop_words=["<|End|>"],
 )
 
-
 # copied from chatml template
 register_template(
     name="yi",
@@ -1901,7 +1803,6 @@ register_template(
     format_system=StringFormatter(slots=["<|im_start|>system\n{{content}}<|im_end|>\n"]),
     stop_words=["<|im_end|>"],
 )
-
 
 register_template(
     name="yi_vl",
@@ -1919,7 +1820,6 @@ register_template(
     mm_plugin=get_mm_plugin(name="llava", image_token="<image>"),
 )
 
-
 register_template(
     name="yuan",
     format_user=StringFormatter(slots=["{{content}}", {"token": "<sep>"}]),
@@ -1927,14 +1827,12 @@ register_template(
     stop_words=["<eod>"],
 )
 
-
 register_template(
     name="zephyr",
     format_user=StringFormatter(slots=["<|user|>\n{{content}}", {"eos_token"}, "<|assistant|>\n"]),
     format_system=StringFormatter(slots=["<|system|>\n{{content}}", {"eos_token"}]),
     default_system="You are Zephyr, a helpful assistant.",
 )
-
 
 register_template(
     name="ziya",

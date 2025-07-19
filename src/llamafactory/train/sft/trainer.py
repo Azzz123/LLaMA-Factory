@@ -25,12 +25,11 @@ import torch
 from transformers import Seq2SeqTrainer
 from typing_extensions import override
 
+from ..callbacks import SaveProcessorCallback
+from ..trainer_utils import create_custom_optimizer, create_custom_scheduler
 from ...extras import logging
 from ...extras.constants import IGNORE_INDEX
 from ...extras.packages import is_transformers_version_greater_than
-from ..callbacks import SaveProcessorCallback
-from ..trainer_utils import create_custom_optimizer, create_custom_scheduler
-
 
 if TYPE_CHECKING:
     from torch.utils.data import Dataset
@@ -39,7 +38,6 @@ if TYPE_CHECKING:
 
     from ...hparams import FinetuningArguments
 
-
 logger = logging.get_logger(__name__)
 
 
@@ -47,11 +45,11 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
     r"""Inherits Seq2SeqTrainer to compute generative metrics such as BLEU and ROUGE."""
 
     def __init__(
-        self,
-        finetuning_args: "FinetuningArguments",
-        processor: Optional["ProcessorMixin"],
-        gen_kwargs: Optional[dict[str, Any]] = None,
-        **kwargs,
+            self,
+            finetuning_args: "FinetuningArguments",
+            processor: Optional["ProcessorMixin"],
+            gen_kwargs: Optional[dict[str, Any]] = None,
+            **kwargs,
     ) -> None:
         if is_transformers_version_greater_than("4.46"):
             kwargs["processing_class"] = kwargs.pop("tokenizer")
@@ -86,7 +84,7 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
 
     @override
     def create_scheduler(
-        self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
+            self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
     ) -> "torch.optim.lr_scheduler.LRScheduler":
         create_custom_scheduler(self.args, num_training_steps, optimizer)
         return super().create_scheduler(num_training_steps, optimizer)
@@ -104,12 +102,12 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
 
     @override
     def prediction_step(
-        self,
-        model: "torch.nn.Module",
-        inputs: dict[str, Union["torch.Tensor", Any]],
-        prediction_loss_only: bool,
-        ignore_keys: Optional[list[str]] = None,
-        **gen_kwargs,
+            self,
+            model: "torch.nn.Module",
+            inputs: dict[str, Union["torch.Tensor", Any]],
+            prediction_loss_only: bool,
+            ignore_keys: Optional[list[str]] = None,
+            **gen_kwargs,
     ) -> tuple[Optional[float], Optional["torch.Tensor"], Optional["torch.Tensor"]]:
         r"""Remove the prompt part in the generated tokens.
 
@@ -130,7 +128,7 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
         return loss, generated_tokens, labels
 
     def save_predictions(
-        self, dataset: "Dataset", predict_results: "PredictionOutput", skip_special_tokens: bool = True
+            self, dataset: "Dataset", predict_results: "PredictionOutput", skip_special_tokens: bool = True
     ) -> None:
         r"""Save model predictions to `output_dir`.
 
@@ -154,7 +152,7 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
         for i in range(len(preds)):
             pad_len = np.nonzero(preds[i] != self.processing_class.pad_token_id)[0]
             if len(pad_len):  # move pad token to last
-                preds[i] = np.concatenate((preds[i][pad_len[0] :], preds[i][: pad_len[0]]), axis=-1)
+                preds[i] = np.concatenate((preds[i][pad_len[0]:], preds[i][: pad_len[0]]), axis=-1)
 
         decoded_inputs = self.processing_class.batch_decode(dataset["input_ids"], skip_special_tokens=False)
         decoded_preds = self.processing_class.batch_decode(preds, skip_special_tokens=skip_special_tokens)

@@ -24,7 +24,6 @@ from llamafactory.hparams import get_train_args
 from llamafactory.model import load_model, load_tokenizer
 from llamafactory.train.sft.trainer import CustomSeq2SeqTrainer
 
-
 DEMO_DATA = os.getenv("DEMO_DATA", "llamafactory/demo_data")
 
 TINY_LLAMA3 = os.getenv("TINY_LLAMA3", "llamafactory/tiny-random-Llama-3")

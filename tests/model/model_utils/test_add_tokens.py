@@ -19,7 +19,6 @@ import pytest
 from llamafactory.hparams import ModelArguments
 from llamafactory.model import load_tokenizer
 
-
 TINY_LLAMA3 = os.getenv("TINY_LLAMA3", "llamafactory/tiny-random-Llama-3")
 
 UNUSED_TOKEN = "<|UNUSED_TOKEN|>"

@@ -21,7 +21,6 @@ from peft.utils import SAFETENSORS_WEIGHTS_NAME as SAFE_ADAPTER_WEIGHTS_NAME
 from peft.utils import WEIGHTS_NAME as ADAPTER_WEIGHTS_NAME
 from transformers.utils import SAFE_WEIGHTS_INDEX_NAME, SAFE_WEIGHTS_NAME, WEIGHTS_INDEX_NAME, WEIGHTS_NAME
 
-
 AUDIO_PLACEHOLDER = os.getenv("AUDIO_PLACEHOLDER", "<audio>")
 
 CHECKPOINT_NAMES = {
@@ -136,14 +135,14 @@ class RopeScaling(str, Enum):
 
 
 def register_model_group(
-    models: dict[str, dict[DownloadSource, str]],
-    template: Optional[str] = None,
-    multimodal: bool = False,
+        models: dict[str, dict[DownloadSource, str]],
+        template: Optional[str] = None,
+        multimodal: bool = False,
 ) -> None:
     for name, path in models.items():
         SUPPORTED_MODELS[name] = path
         if template is not None and (
-            any(suffix in name for suffix in ("-Chat", "-Distill", "-Instruct")) or multimodal
+                any(suffix in name for suffix in ("-Chat", "-Distill", "-Instruct")) or multimodal
         ):
             DEFAULT_TEMPLATE[name] = template
 
@@ -163,7 +162,6 @@ register_model_group(
     template="cohere",
 )
 
-
 register_model_group(
     models={
         "Baichuan-7B-Base": {
@@ -181,7 +179,6 @@ register_model_group(
     },
     template="baichuan",
 )
-
 
 register_model_group(
     models={
@@ -208,7 +205,6 @@ register_model_group(
     template="baichuan2",
 )
 
-
 register_model_group(
     models={
         "BLOOM-560M": {
@@ -225,7 +221,6 @@ register_model_group(
         },
     },
 )
-
 
 register_model_group(
     models={
@@ -244,7 +239,6 @@ register_model_group(
     },
 )
 
-
 register_model_group(
     models={
         "BlueLM-7B-Base": {
@@ -259,7 +253,6 @@ register_model_group(
     template="bluelm",
 )
 
-
 register_model_group(
     models={
         "Breeze-7B": {
@@ -272,7 +265,6 @@ register_model_group(
     template="breeze",
 )
 
-
 register_model_group(
     models={
         "ChatGLM2-6B-Chat": {
@@ -282,7 +274,6 @@ register_model_group(
     },
     template="chatglm2",
 )
-
 
 register_model_group(
     models={
@@ -297,7 +288,6 @@ register_model_group(
     },
     template="chatglm3",
 )
-
 
 register_model_group(
     models={
@@ -329,7 +319,6 @@ register_model_group(
     template="llama2_zh",
 )
 
-
 register_model_group(
     models={
         "CodeGeeX4-9B-Chat": {
@@ -339,7 +328,6 @@ register_model_group(
     },
     template="codegeex4",
 )
-
 
 register_model_group(
     models={
@@ -360,7 +348,6 @@ register_model_group(
     template="gemma",
 )
 
-
 register_model_group(
     models={
         "Codestral-22B-v0.1-Chat": {
@@ -370,7 +357,6 @@ register_model_group(
     },
     template="mistral",
 )
-
 
 register_model_group(
     models={
@@ -393,7 +379,6 @@ register_model_group(
     template="cohere",
 )
 
-
 register_model_group(
     models={
         "DBRX-132B-Base": {
@@ -407,7 +392,6 @@ register_model_group(
     },
     template="dbrx",
 )
-
 
 register_model_group(
     models={
@@ -479,7 +463,6 @@ register_model_group(
     template="deepseek",
 )
 
-
 register_model_group(
     models={
         "DeepSeek-Coder-6.7B-Base": {
@@ -510,7 +493,6 @@ register_model_group(
     template="deepseekcoder",
 )
 
-
 register_model_group(
     models={
         "DeepSeek-V2-0628-236B-Chat": {
@@ -540,7 +522,6 @@ register_model_group(
     },
     template="deepseek3",
 )
-
 
 register_model_group(
     models={
@@ -588,7 +569,6 @@ register_model_group(
     template="deepseekr1",
 )
 
-
 register_model_group(
     models={
         "Devstral-Small-2507-Instruct": {
@@ -599,7 +579,6 @@ register_model_group(
     template="mistral_small",
 )
 
-
 register_model_group(
     models={
         "EXAONE-3.0-7.8B-Instruct": {
@@ -608,7 +587,6 @@ register_model_group(
     },
     template="exaone",
 )
-
 
 register_model_group(
     models={
@@ -698,7 +676,6 @@ register_model_group(
     template="falcon_h1",
 )
 
-
 register_model_group(
     models={
         "Gemma-2B": {
@@ -726,7 +703,6 @@ register_model_group(
     },
     template="gemma",
 )
-
 
 register_model_group(
     models={
@@ -772,7 +748,6 @@ register_model_group(
     template="gemma2",
 )
 
-
 register_model_group(
     models={
         "Gemma-3-4B": {
@@ -812,7 +787,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "Gemma-3n-E2B": {
@@ -835,7 +809,6 @@ register_model_group(
     template="gemma3n",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -868,7 +841,6 @@ register_model_group(
     template="glm4",
 )
 
-
 register_model_group(
     models={
         "GLM-4.1V-9B-Base": {
@@ -884,7 +856,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "GLM-Z1-0414-9B-Chat": {
@@ -898,7 +869,6 @@ register_model_group(
     },
     template="glmz1",
 )
-
 
 register_model_group(
     models={
@@ -920,7 +890,6 @@ register_model_group(
         },
     },
 )
-
 
 register_model_group(
     models={
@@ -1016,7 +985,6 @@ register_model_group(
     template="granite3",
 )
 
-
 register_model_group(
     models={
         "Granite-Vision-3.2-2B": {
@@ -1028,7 +996,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "Hunyuan-7B-Instruct": {
@@ -1038,7 +1005,6 @@ register_model_group(
     },
     template="hunyuan",
 )
-
 
 register_model_group(
     models={
@@ -1066,7 +1032,6 @@ register_model_group(
     template="index",
 )
 
-
 register_model_group(
     models={
         "InternLM-7B": {
@@ -1088,7 +1053,6 @@ register_model_group(
     },
     template="intern",
 )
-
 
 register_model_group(
     models={
@@ -1150,7 +1114,6 @@ register_model_group(
     template="intern2",
 )
 
-
 register_model_group(
     models={
         "InternVL2.5-2B-MPO": {
@@ -1190,7 +1153,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "Jamba-v0.1": {
@@ -1199,7 +1161,6 @@ register_model_group(
         }
     },
 )
-
 
 register_model_group(
     models={
@@ -1210,7 +1171,6 @@ register_model_group(
     },
     template="qwen",
 )
-
 
 register_model_group(
     models={
@@ -1231,7 +1191,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "LingoWhale-8B": {
@@ -1240,7 +1199,6 @@ register_model_group(
         }
     },
 )
-
 
 register_model_group(
     models={
@@ -1262,7 +1220,6 @@ register_model_group(
         },
     }
 )
-
 
 register_model_group(
     models={
@@ -1293,7 +1250,6 @@ register_model_group(
     },
     template="llama2",
 )
-
 
 register_model_group(
     models={
@@ -1377,7 +1333,6 @@ register_model_group(
     template="llama3",
 )
 
-
 register_model_group(
     models={
         "Llama-3.2-11B-Vision": {
@@ -1400,7 +1355,6 @@ register_model_group(
     template="mllama",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1425,7 +1379,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "LLaVA-1.5-7B-Chat": {
@@ -1440,7 +1393,6 @@ register_model_group(
     template="llava",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1457,7 +1409,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "LLaVA-NeXT-Mistral-7B-Chat": {
@@ -1468,7 +1419,6 @@ register_model_group(
     template="llava_next_mistral",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1481,7 +1431,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "LLaVA-NeXT-34B-Chat": {
@@ -1492,7 +1441,6 @@ register_model_group(
     template="llava_next_yi",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1509,7 +1457,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "LLaVA-NeXT-Video-7B-Chat": {
@@ -1525,7 +1472,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "LLaVA-NeXT-Video-7B-32k-Chat": {
@@ -1536,7 +1482,6 @@ register_model_group(
     template="llava_next_video_mistral",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1552,7 +1497,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "Marco-o1-Chat": {
@@ -1562,7 +1506,6 @@ register_model_group(
     },
     template="marco",
 )
-
 
 register_model_group(
     models={
@@ -1586,7 +1529,6 @@ register_model_group(
     template="mimo",
 )
 
-
 register_model_group(
     models={
         "MiMo-7B-VL-Instruct": {
@@ -1602,7 +1544,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "MiniCPM-2B-SFT-Chat": {
@@ -1617,7 +1558,6 @@ register_model_group(
     template="cpm",
 )
 
-
 register_model_group(
     models={
         "MiniCPM3-4B-Chat": {
@@ -1628,7 +1568,6 @@ register_model_group(
     },
     template="cpm3",
 )
-
 
 register_model_group(
     models={
@@ -1644,7 +1583,6 @@ register_model_group(
     template="cpm4",
 )
 
-
 register_model_group(
     models={
         "MiniCPM-o-2_6": {
@@ -1656,7 +1594,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "MiniCPM-V-2_6": {
@@ -1667,7 +1604,6 @@ register_model_group(
     template="minicpm_v",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1686,7 +1622,6 @@ register_model_group(
     },
     template="ministral",
 )
-
 
 register_model_group(
     models={
@@ -1718,7 +1653,6 @@ register_model_group(
     template="mistral",
 )
 
-
 register_model_group(
     models={
         "Mistral-Small-24B-Base-2501": {
@@ -1732,7 +1666,6 @@ register_model_group(
     },
     template="mistral_small",
 )
-
 
 register_model_group(
     models={
@@ -1752,7 +1685,6 @@ register_model_group(
     template="mistral_small",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1776,7 +1708,6 @@ register_model_group(
     template="mistral",
 )
 
-
 register_model_group(
     models={
         "Moonlight-16B-A3B": {
@@ -1790,7 +1721,6 @@ register_model_group(
     },
     template="moonlight",
 )
-
 
 register_model_group(
     models={
@@ -1809,7 +1739,6 @@ register_model_group(
     },
 )
 
-
 register_model_group(
     models={
         "OpenChat3.5-7B-Chat": {
@@ -1820,7 +1749,6 @@ register_model_group(
     template="openchat",
 )
 
-
 register_model_group(
     models={
         "OpenChat3.6-8B-Chat": {
@@ -1829,7 +1757,6 @@ register_model_group(
     },
     template="openchat-3.6",
 )
-
 
 register_model_group(
     models={
@@ -1852,7 +1779,6 @@ register_model_group(
     },
     template="opencoder",
 )
-
 
 register_model_group(
     models={
@@ -1880,7 +1806,6 @@ register_model_group(
     template="orion",
 )
 
-
 register_model_group(
     models={
         "PaliGemma-3B-pt-224": {
@@ -1907,7 +1832,6 @@ register_model_group(
     template="paligemma",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -1976,7 +1900,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "Phi-1.5-1.3B": {
@@ -1989,7 +1912,6 @@ register_model_group(
         },
     }
 )
-
 
 register_model_group(
     models={
@@ -2021,7 +1943,6 @@ register_model_group(
     template="phi",
 )
 
-
 register_model_group(
     models={
         "Phi-3-7B-8k-Instruct": {
@@ -2036,7 +1957,6 @@ register_model_group(
     template="phi_small",
 )
 
-
 register_model_group(
     models={
         "Phi-4-14B-Instruct": {
@@ -2046,7 +1966,6 @@ register_model_group(
     },
     template="phi4",
 )
-
 
 register_model_group(
     models={
@@ -2058,7 +1977,6 @@ register_model_group(
     template="pixtral",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -2129,7 +2047,6 @@ register_model_group(
     },
     template="qwen",
 )
-
 
 register_model_group(
     models={
@@ -2281,7 +2198,6 @@ register_model_group(
     template="qwen",
 )
 
-
 register_model_group(
     models={
         "Qwen2-0.5B": {
@@ -2406,7 +2322,6 @@ register_model_group(
     },
     template="qwen",
 )
-
 
 register_model_group(
     models={
@@ -2642,7 +2557,6 @@ register_model_group(
     template="qwen",
 )
 
-
 register_model_group(
     models={
         "Qwen3-0.6B-Base": {
@@ -2737,7 +2651,6 @@ register_model_group(
     template="qwen3",
 )
 
-
 register_model_group(
     models={
         "Qwen2-Audio-7B": {
@@ -2752,7 +2665,6 @@ register_model_group(
     template="qwen2_audio",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -2776,7 +2688,6 @@ register_model_group(
     template="qwen2_omni",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -2879,7 +2790,6 @@ register_model_group(
     multimodal=True,
 )
 
-
 register_model_group(
     models={
         "Seed-Coder-8B-Base": {
@@ -2895,7 +2805,6 @@ register_model_group(
     template="seed_coder",
 )
 
-
 register_model_group(
     models={
         "Skywork-13B-Base": {
@@ -2904,7 +2813,6 @@ register_model_group(
         }
     }
 )
-
 
 register_model_group(
     models={
@@ -2915,7 +2823,6 @@ register_model_group(
     },
     template="skywork_o1",
 )
-
 
 register_model_group(
     models={
@@ -2947,7 +2854,6 @@ register_model_group(
     template="smollm",
 )
 
-
 register_model_group(
     models={
         "SmolLM2-135M": {
@@ -2978,7 +2884,6 @@ register_model_group(
     template="smollm2",
 )
 
-
 register_model_group(
     models={
         "SOLAR-10.7B-v1.0": {
@@ -2991,7 +2896,6 @@ register_model_group(
     },
     template="solar",
 )
-
 
 register_model_group(
     models={
@@ -3009,7 +2913,6 @@ register_model_group(
         },
     }
 )
-
 
 register_model_group(
     models={
@@ -3034,7 +2937,6 @@ register_model_group(
     template="telechat",
 )
 
-
 register_model_group(
     models={
         "TeleChat2-3B-Chat": {
@@ -3056,7 +2958,6 @@ register_model_group(
     template="telechat2",
 )
 
-
 register_model_group(
     models={
         "Vicuna-v1.5-7B-Chat": {
@@ -3071,7 +2972,6 @@ register_model_group(
     template="vicuna",
 )
 
-
 register_model_group(
     models={
         "Video-LLaVA-7B-Chat": {
@@ -3081,7 +2981,6 @@ register_model_group(
     template="video_llava",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -3136,7 +3035,6 @@ register_model_group(
     },
     template="xuanyuan",
 )
-
 
 register_model_group(
     models={
@@ -3196,7 +3094,6 @@ register_model_group(
     template="xverse",
 )
 
-
 register_model_group(
     models={
         "Yayi-7B": {
@@ -3210,7 +3107,6 @@ register_model_group(
     },
     template="yayi",
 )
-
 
 register_model_group(
     models={
@@ -3295,7 +3191,6 @@ register_model_group(
     template="yi",
 )
 
-
 register_model_group(
     models={
         "Yi-VL-6B-Chat": {
@@ -3308,7 +3203,6 @@ register_model_group(
     template="yi_vl",
     multimodal=True,
 )
-
 
 register_model_group(
     models={
@@ -3327,7 +3221,6 @@ register_model_group(
     },
     template="yuan",
 )
-
 
 register_model_group(
     models={
