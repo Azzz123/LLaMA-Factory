@@ -166,8 +166,7 @@ cython_debug/
 uv.lock
 
 # custom .gitignore
-scripts/custom/
-data/graduate/
+data/graduate/*
 hf_cache/
 ms_cache/
 om_cache/
@@ -181,4 +180,4 @@ swanlog/
 generated_predictions.jsonl
 predictions_score.json
 models/
-
+!data/graduate/utils/
