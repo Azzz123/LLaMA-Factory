@@ -27,11 +27,10 @@ from trl import KTOTrainer
 from trl.trainer import disable_dropout_in_model
 from typing_extensions import override
 
-from ...extras.constants import IGNORE_INDEX
-from ...extras.packages import is_transformers_version_greater_than
 from ..callbacks import SaveProcessorCallback
 from ..trainer_utils import create_custom_optimizer, create_custom_scheduler, get_batch_logps, nested_detach
-
+from ...extras.constants import IGNORE_INDEX
+from ...extras.packages import is_transformers_version_greater_than
 
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, ProcessorMixin
@@ -41,13 +40,13 @@ if TYPE_CHECKING:
 
 class CustomKTOTrainer(KTOTrainer):
     def __init__(
-        self,
-        model: Union["PreTrainedModel", torch.nn.Module],
-        ref_model: Optional[Union["PreTrainedModel", torch.nn.Module]],
-        finetuning_args: "FinetuningArguments",
-        processor: Optional["ProcessorMixin"],
-        disable_dropout: bool = True,
-        **kwargs,
+            self,
+            model: Union["PreTrainedModel", torch.nn.Module],
+            ref_model: Optional[Union["PreTrainedModel", torch.nn.Module]],
+            finetuning_args: "FinetuningArguments",
+            processor: Optional["ProcessorMixin"],
+            disable_dropout: bool = True,
+            **kwargs,
     ):
         if is_transformers_version_greater_than("4.46"):
             kwargs["processing_class"] = kwargs.pop("tokenizer")
@@ -88,7 +87,7 @@ class CustomKTOTrainer(KTOTrainer):
         if ref_model is not None:
             if self.is_deepspeed_enabled:
                 if not (
-                    getattr(ref_model, "is_loaded_in_8bit", False) or getattr(ref_model, "is_loaded_in_4bit", False)
+                        getattr(ref_model, "is_loaded_in_8bit", False) or getattr(ref_model, "is_loaded_in_4bit", False)
                 ):  # quantized models are already set on the correct device
                     self.ref_model = self._prepare_deepspeed(self.ref_model)
             else:
@@ -112,7 +111,7 @@ class CustomKTOTrainer(KTOTrainer):
 
     @override
     def create_scheduler(
-        self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
+            self, num_training_steps: int, optimizer: Optional["torch.optim.Optimizer"] = None
     ) -> "torch.optim.lr_scheduler.LRScheduler":
         create_custom_scheduler(self.args, num_training_steps, optimizer)
         return super().create_scheduler(num_training_steps, optimizer)
@@ -132,7 +131,7 @@ class CustomKTOTrainer(KTOTrainer):
 
     @override
     def forward(
-        self, model: "PreTrainedModel", batch: dict[str, "torch.Tensor"], prefix: Literal["", "kl_"] = ""
+            self, model: "PreTrainedModel", batch: dict[str, "torch.Tensor"], prefix: Literal["", "kl_"] = ""
     ) -> tuple["torch.Tensor", "torch.Tensor", "torch.Tensor"]:
         r"""Run forward pass and computes the log probabilities."""
         batch = nested_detach(batch, clone=True)  # avoid error
@@ -167,7 +166,7 @@ class CustomKTOTrainer(KTOTrainer):
 
     @override
     def concatenated_forward(
-        self, model: "PreTrainedModel", batch: dict[str, "torch.Tensor"]
+            self, model: "PreTrainedModel", batch: dict[str, "torch.Tensor"]
     ) -> tuple["torch.Tensor", "torch.Tensor", "torch.Tensor", "torch.Tensor", "torch.Tensor", "torch.Tensor"]:
         target_logits, target_logps, target_logps_avg = self.forward(model, batch)
         with torch.no_grad():
@@ -185,7 +184,7 @@ class CustomKTOTrainer(KTOTrainer):
 
     @override
     def compute_reference_log_probs(
-        self, model: "PreTrainedModel", batch: dict[str, "torch.Tensor"]
+            self, model: "PreTrainedModel", batch: dict[str, "torch.Tensor"]
     ) -> tuple["torch.Tensor", "torch.Tensor", "torch.Tensor"]:
         r"""Compute log probabilities of the reference model."""
         if self.ref_model is None:
@@ -204,9 +203,9 @@ class CustomKTOTrainer(KTOTrainer):
 
     @override
     def get_batch_loss_metrics(
-        self,
-        model: "PreTrainedModel",
-        batch: dict[str, "torch.Tensor"],
+            self,
+            model: "PreTrainedModel",
+            batch: dict[str, "torch.Tensor"],
     ) -> tuple["torch.Tensor", dict[str, "torch.Tensor"]]:
         r"""Compute the DPO loss and other metrics for the given batch of inputs for train or test."""
         metrics = {}
@@ -254,7 +253,7 @@ class CustomKTOTrainer(KTOTrainer):
 
     @override
     def compute_loss(
-        self, model: "PreTrainedModel", inputs: dict[str, "torch.Tensor"], return_outputs: bool = False, **kwargs
+            self, model: "PreTrainedModel", inputs: dict[str, "torch.Tensor"], return_outputs: bool = False, **kwargs
     ) -> Union["torch.Tensor", tuple["torch.Tensor", list["torch.Tensor"]]]:
         r"""Subclass and override to accept extra kwargs."""
         return super().compute_loss(model, inputs, return_outputs)

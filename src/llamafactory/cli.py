@@ -18,20 +18,19 @@ import sys
 from copy import deepcopy
 from functools import partial
 
-
 USAGE = (
-    "-" * 70
-    + "\n"
-    + "| Usage:                                                             |\n"
-    + "|   llamafactory-cli api -h: launch an OpenAI-style API server       |\n"
-    + "|   llamafactory-cli chat -h: launch a chat interface in CLI         |\n"
-    + "|   llamafactory-cli eval -h: evaluate models                        |\n"
-    + "|   llamafactory-cli export -h: merge LoRA adapters and export model |\n"
-    + "|   llamafactory-cli train -h: train models                          |\n"
-    + "|   llamafactory-cli webchat -h: launch a chat interface in Web UI   |\n"
-    + "|   llamafactory-cli webui: launch LlamaBoard                        |\n"
-    + "|   llamafactory-cli version: show version info                      |\n"
-    + "-" * 70
+        "-" * 70
+        + "\n"
+        + "| Usage:                                                             |\n"
+        + "|   llamafactory-cli api -h: launch an OpenAI-style API server       |\n"
+        + "|   llamafactory-cli chat -h: launch a chat interface in CLI         |\n"
+        + "|   llamafactory-cli eval -h: evaluate models                        |\n"
+        + "|   llamafactory-cli export -h: merge LoRA adapters and export model |\n"
+        + "|   llamafactory-cli train -h: train models                          |\n"
+        + "|   llamafactory-cli webchat -h: launch a chat interface in Web UI   |\n"
+        + "|   llamafactory-cli webui: launch LlamaBoard                        |\n"
+        + "|   llamafactory-cli version: show version info                      |\n"
+        + "-" * 70
 )
 
 
@@ -49,15 +48,15 @@ def main():
     logger = logging.get_logger(__name__)
 
     WELCOME = (
-        "-" * 58
-        + "\n"
-        + f"| Welcome to LLaMA Factory, version {VERSION}"
-        + " " * (21 - len(VERSION))
-        + "|\n|"
-        + " " * 56
-        + "|\n"
-        + "| Project page: https://github.com/hiyouga/LLaMA-Factory |\n"
-        + "-" * 58
+            "-" * 58
+            + "\n"
+            + f"| Welcome to LLaMA Factory, version {VERSION}"
+            + " " * (21 - len(VERSION))
+            + "|\n|"
+            + " " * 56
+            + "|\n"
+            + "| Project page: https://github.com/hiyouga/LLaMA-Factory |\n"
+            + "-" * 58
     )
 
     COMMAND_MAP = {

@@ -16,14 +16,12 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Optional
 
+from .processor_utils import DatasetProcessor, greedy_knapsack, infer_seqlen
 from ...extras import logging
 from ...extras.constants import IGNORE_INDEX
-from .processor_utils import DatasetProcessor, greedy_knapsack, infer_seqlen
-
 
 if TYPE_CHECKING:
     from ..mm_plugin import AudioInput, ImageInput, VideoInput
-
 
 logger = logging.get_logger(__name__)
 
@@ -31,14 +29,14 @@ logger = logging.get_logger(__name__)
 @dataclass
 class SupervisedDatasetProcessor(DatasetProcessor):
     def _encode_data_example(
-        self,
-        prompt: list[dict[str, str]],
-        response: list[dict[str, str]],
-        system: Optional[str],
-        tools: Optional[str],
-        images: list["ImageInput"],
-        videos: list["VideoInput"],
-        audios: list["AudioInput"],
+            self,
+            prompt: list[dict[str, str]],
+            response: list[dict[str, str]],
+            system: Optional[str],
+            tools: Optional[str],
+            images: list["ImageInput"],
+            videos: list["VideoInput"],
+            audios: list["AudioInput"],
     ) -> tuple[list[int], list[int]]:
         messages = self.template.mm_plugin.process_messages(prompt + response, images, videos, audios, self.processor)
         input_ids, labels = self.template.mm_plugin.process_token_ids(

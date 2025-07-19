@@ -18,7 +18,6 @@ import os
 
 import datasets
 
-
 _HF_ENDPOINT = os.getenv("HF_ENDPOINT", "https://huggingface.co")
 _DESCRIPTION = "Human preference data about helpfulness and harmlessness."
 _CITATION = ""
@@ -74,12 +73,12 @@ class HhRlhfEn(datasets.GeneratorBasedBuilder):
                     rejected = data["rejected"]
 
                     assist_idx = rejected.rfind("\n\nAssistant: ")
-                    r_reject = rejected[assist_idx + 13 :].strip()
+                    r_reject = rejected[assist_idx + 13:].strip()
                     assist_idx = chosen.rfind("\n\nAssistant: ")
-                    r_accept = chosen[assist_idx + 13 :].strip()
+                    r_accept = chosen[assist_idx + 13:].strip()
 
                     human_idx = chosen.rfind("\n\nHuman: ")
-                    query = chosen[human_idx + 9 : assist_idx].strip()
+                    query = chosen[human_idx + 9: assist_idx].strip()
                     prompt = chosen[:human_idx]
                     history = []
 
@@ -87,8 +86,8 @@ class HhRlhfEn(datasets.GeneratorBasedBuilder):
                         assist_idx = prompt.rfind("\n\nAssistant: ")
                         human_idx = prompt.rfind("\n\nHuman: ")
                         if human_idx != -1:
-                            old_query = prompt[human_idx + 9 : assist_idx].strip()
-                            old_resp = prompt[assist_idx + 13 :].strip()
+                            old_query = prompt[human_idx + 9: assist_idx].strip()
+                            old_resp = prompt[assist_idx + 13:].strip()
                             history.insert(0, (old_query, old_resp))
                         else:
                             break

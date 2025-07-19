@@ -18,7 +18,6 @@ import os
 
 import datasets
 
-
 _HF_ENDPOINT = os.getenv("HF_ENDPOINT", "https://huggingface.co")
 
 _DESCRIPTION = "BELLE multiturn chat dataset."
@@ -62,7 +61,7 @@ class BelleMultiturn(datasets.GeneratorBasedBuilder):
 
                 assist_idx = prompt.rfind("Assistant:")
                 human_idx = prompt.rfind("Human:")
-                query = prompt[human_idx + 6 : assist_idx].strip()
+                query = prompt[human_idx + 6: assist_idx].strip()
                 prompt = prompt[:human_idx].strip()
                 conversations.insert(0, {"from": "gpt", "value": response})
                 conversations.insert(0, {"from": "human", "value": query})
@@ -71,8 +70,8 @@ class BelleMultiturn(datasets.GeneratorBasedBuilder):
                     assist_idx = prompt.rfind("Assistant:")
                     human_idx = prompt.rfind("Human:")
                     if human_idx != -1:
-                        old_query = prompt[human_idx + 6 : assist_idx].strip()
-                        old_resp = prompt[assist_idx + 10 :].strip()
+                        old_query = prompt[human_idx + 6: assist_idx].strip()
+                        old_resp = prompt[assist_idx + 10:].strip()
                         conversations.insert(0, {"from": "gpt", "value": old_resp})
                         conversations.insert(0, {"from": "human", "value": old_query})
                     else:

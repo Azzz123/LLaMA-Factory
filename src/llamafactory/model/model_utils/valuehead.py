@@ -20,12 +20,10 @@ from transformers.utils import cached_file
 from ...extras import logging
 from ...extras.constants import V_HEAD_SAFE_WEIGHTS_NAME, V_HEAD_WEIGHTS_NAME
 
-
 if TYPE_CHECKING:
     from transformers import PreTrainedModel
 
     from ...hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 

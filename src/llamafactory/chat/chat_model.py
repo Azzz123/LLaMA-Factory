@@ -21,13 +21,12 @@ from collections.abc import AsyncGenerator, Generator
 from threading import Thread
 from typing import TYPE_CHECKING, Any, Optional
 
-from ..extras.constants import EngineName
-from ..extras.misc import torch_gc
-from ..hparams import get_infer_args
 from .hf_engine import HuggingfaceEngine
 from .sglang_engine import SGLangEngine
 from .vllm_engine import VllmEngine
-
+from ..extras.constants import EngineName
+from ..extras.misc import torch_gc
+from ..hparams import get_infer_args
 
 if TYPE_CHECKING:
     from ..data.mm_plugin import AudioInput, ImageInput, VideoInput
@@ -63,14 +62,14 @@ class ChatModel:
         self._thread.start()
 
     def chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> list["Response"]:
         r"""Get a list of responses of the chat model."""
         task = asyncio.run_coroutine_threadsafe(
@@ -79,27 +78,27 @@ class ChatModel:
         return task.result()
 
     async def achat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> list["Response"]:
         r"""Asynchronously get a list of responses of the chat model."""
         return await self.engine.chat(messages, system, tools, images, videos, audios, **input_kwargs)
 
     def stream_chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> Generator[str, None, None]:
         r"""Get the response token-by-token of the chat model."""
         generator = self.astream_chat(messages, system, tools, images, videos, audios, **input_kwargs)
@@ -111,34 +110,34 @@ class ChatModel:
                 break
 
     async def astream_chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> AsyncGenerator[str, None]:
         r"""Asynchronously get the response token-by-token of the chat model."""
         async for new_token in self.engine.stream_chat(
-            messages, system, tools, images, videos, audios, **input_kwargs
+                messages, system, tools, images, videos, audios, **input_kwargs
         ):
             yield new_token
 
     def get_scores(
-        self,
-        batch_input: list[str],
-        **input_kwargs,
+            self,
+            batch_input: list[str],
+            **input_kwargs,
     ) -> list[float]:
         r"""Get a list of scores of the reward model."""
         task = asyncio.run_coroutine_threadsafe(self.aget_scores(batch_input, **input_kwargs), self._loop)
         return task.result()
 
     async def aget_scores(
-        self,
-        batch_input: list[str],
-        **input_kwargs,
+            self,
+            batch_input: list[str],
+            **input_kwargs,
     ) -> list[float]:
         r"""Asynchronously get a list of scores of the reward model."""
         return await self.engine.get_scores(batch_input, **input_kwargs)

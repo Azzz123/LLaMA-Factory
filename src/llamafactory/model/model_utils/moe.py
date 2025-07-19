@@ -18,7 +18,6 @@ from transformers.integrations import is_deepspeed_zero3_enabled
 
 from ...extras.misc import check_version
 
-
 if TYPE_CHECKING:
     from torch import nn
     from transformers import PretrainedConfig, PreTrainedModel

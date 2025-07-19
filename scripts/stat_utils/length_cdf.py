@@ -23,11 +23,11 @@ from llamafactory.model import load_tokenizer
 
 
 def length_cdf(
-    model_name_or_path: str,
-    dataset: str = "alpaca_en_demo",
-    dataset_dir: str = "data",
-    template: str = "default",
-    interval: int = 1000,
+        model_name_or_path: str,
+        dataset: str = "alpaca_en_demo",
+        dataset_dir: str = "data",
+        template: str = "default",
+        interval: int = 1000,
 ):
     r"""Calculate the distribution of the input lengths in the dataset.
 

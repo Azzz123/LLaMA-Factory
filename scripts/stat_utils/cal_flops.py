@@ -24,10 +24,10 @@ from llamafactory.chat import ChatModel
 
 
 def calculate_flops(
-    model_name_or_path: str,
-    batch_size: int = 1,
-    seq_length: int = 512,
-    flash_attn: str = "auto",
+        model_name_or_path: str,
+        batch_size: int = 1,
+        seq_length: int = 512,
+        flash_attn: str = "auto",
 ):
     r"""Calculate the flops of pre-trained models.
 

@@ -25,14 +25,12 @@ from llamafactory.extras.packages import is_transformers_version_greater_than
 from llamafactory.hparams import get_infer_args
 from llamafactory.model import load_tokenizer
 
-
 if TYPE_CHECKING:
     from transformers import PreTrainedTokenizer, ProcessorMixin
     from transformers.image_processing_utils import BaseImageProcessor
 
     from llamafactory.data.mm_plugin import BasePlugin
     from llamafactory.model.loader import TokenizerModule
-
 
 HF_TOKEN = os.getenv("HF_TOKEN")
 
@@ -126,14 +124,14 @@ def _load_tokenizer_module(model_name_or_path: str) -> "TokenizerModule":
 
 
 def _check_plugin(
-    plugin: "BasePlugin",
-    tokenizer: "PreTrainedTokenizer",
-    processor: "ProcessorMixin",
-    expected_mm_messages: list[dict[str, str]] = MM_MESSAGES,
-    expected_input_ids: list[int] = INPUT_IDS,
-    expected_labels: list[int] = LABELS,
-    expected_mm_inputs: dict[str, Any] = {},
-    expected_no_mm_inputs: dict[str, Any] = {},
+        plugin: "BasePlugin",
+        tokenizer: "PreTrainedTokenizer",
+        processor: "ProcessorMixin",
+        expected_mm_messages: list[dict[str, str]] = MM_MESSAGES,
+        expected_input_ids: list[int] = INPUT_IDS,
+        expected_labels: list[int] = LABELS,
+        expected_mm_inputs: dict[str, Any] = {},
+        expected_no_mm_inputs: dict[str, Any] = {},
 ) -> None:
     if plugin.__class__.__name__ == "Qwen2OmniPlugin":  # test omni_messages
         assert plugin.process_messages(OMNI_MESSAGES, IMAGES, NO_VIDEOS, AUDIOS, processor) == expected_mm_messages
@@ -287,8 +285,9 @@ def test_paligemma_plugin():
         {key: value.replace("<image>", "") for key, value in message.items()} for message in MM_MESSAGES
     ]
     check_inputs["expected_input_ids"] = [
-        tokenizer_module["tokenizer"].convert_tokens_to_ids(paligemma_plugin.image_token)
-    ] * image_seqlen + INPUT_IDS
+                                             tokenizer_module["tokenizer"].convert_tokens_to_ids(
+                                                 paligemma_plugin.image_token)
+                                         ] * image_seqlen + INPUT_IDS
     check_inputs["expected_labels"] = [-100] * image_seqlen + LABELS
     check_inputs["expected_mm_inputs"] = _get_mm_inputs(tokenizer_module["processor"])
     check_inputs["expected_mm_inputs"]["token_type_ids"] = [[0] * image_seqlen + [1] * (1024 - image_seqlen)]

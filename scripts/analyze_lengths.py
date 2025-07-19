@@ -1,19 +1,23 @@
 import json
 import os
+
 import fire
 import pandas as pd
 import torch
 from tqdm import tqdm
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 # <<< MODIFICATION START >>>
 # 导入 ptflops 库
 try:
     from ptflops import get_model_complexity_info
+
     PTFLOPS_AVAILABLE = True
 except ImportError:
     print("Warning: ptflops is not installed. Please run: pip install ptflops")
     PTFLOPS_AVAILABLE = False
+
+
 # <<< MODIFICATION END >>>
 
 
@@ -22,8 +26,7 @@ def analyze_cost_and_length(
         dataset_path: str,
         quantization_bit: int = None,  # 支持QLoRA模型加载
 ):
-    """
-    Analyzes token length distribution and estimates representative FLOPs for a given dataset.
+    """Analyzes token length distribution and estimates representative FLOPs for a given dataset.
     Saves the analysis results to a JSON file in a 'cost_analysis' subfolder.
 
     Args:
@@ -45,7 +48,7 @@ def analyze_cost_and_length(
 
     print(f"Loading dataset from: {dataset_path}")
     try:
-        with open(dataset_path, 'r', encoding='utf-8') as f:
+        with open(dataset_path, encoding='utf-8') as f:
             data = json.load(f)
     except Exception as e:
         print(f"Error loading dataset: {e}")
@@ -91,7 +94,8 @@ def analyze_cost_and_length(
         len_at_p = int(lengths_series.quantile(p))
         # 向上取整到最近的64或128倍数，这通常对性能更好
         recommended_len = (len_at_p // 64 + 1) * 64
-        print(f"- To cover {p*100:.0f}% of your data, you need a length of at least {len_at_p} tokens. (Suggest: {recommended_len})")
+        print(
+            f"- To cover {p * 100:.0f}% of your data, you need a length of at least {len_at_p} tokens. (Suggest: {recommended_len})")
 
     # --- 3. FLOPs Estimation (using ptflops) ---
     flops_stats = {"status": "Not calculated", "reason": ""}

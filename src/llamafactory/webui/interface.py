@@ -15,8 +15,6 @@
 import os
 import platform
 
-from ..extras.misc import fix_proxy, is_env_enabled
-from ..extras.packages import is_gradio_available
 from .common import save_config
 from .components import (
     create_chat_box,
@@ -29,7 +27,8 @@ from .components import (
 )
 from .css import CSS
 from .engine import Engine
-
+from ..extras.misc import fix_proxy, is_env_enabled
+from ..extras.packages import is_gradio_available
 
 if is_gradio_available():
     import gradio as gr

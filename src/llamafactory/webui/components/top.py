@@ -14,17 +14,15 @@
 
 from typing import TYPE_CHECKING
 
+from ..common import save_config
+from ..control import can_quantize, can_quantize_to, check_template, get_model_info, list_checkpoints, switch_hub
 from ...data import TEMPLATES
 from ...extras.constants import METHODS, SUPPORTED_MODELS
 from ...extras.misc import use_modelscope, use_openmind
 from ...extras.packages import is_gradio_available
-from ..common import save_config
-from ..control import can_quantize, can_quantize_to, check_template, get_model_info, list_checkpoints, switch_hub
-
 
 if is_gradio_available():
     import gradio as gr
-
 
 if TYPE_CHECKING:
     from gradio.components import Component

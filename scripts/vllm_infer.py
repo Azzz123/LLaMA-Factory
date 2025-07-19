@@ -27,39 +27,39 @@ from llamafactory.extras.packages import is_vllm_available
 from llamafactory.hparams import get_infer_args
 from llamafactory.model import load_tokenizer
 
-
 if is_vllm_available():
     from vllm import LLM, SamplingParams
     from vllm.lora.request import LoRARequest
 
+import os  # <<< MODIFICATION START >>>
 import time  # <<< MODIFICATION START >>>
-import os    # <<< MODIFICATION START >>>
+
 
 def vllm_infer(
-    model_name_or_path: str,
-    adapter_name_or_path: str = None,
-    dataset: str = "alpaca_en_demo",
-    dataset_dir: str = "data",
-    template: str = "default",
-    cutoff_len: int = 2048,
-    max_samples: Optional[int] = 20000,
-    vllm_config: str = "{}",
-    save_name: str = "generated_predictions.jsonl",
-    temperature: float = 0.5,
-    top_p: float = 0.7,
-    top_k: int = 50,
-    max_new_tokens: int = 2048,
-    repetition_penalty: float = 1.0,
-    skip_special_tokens: bool = True,
-    default_system: Optional[str] = None,
-    enable_thinking: bool = False,
-    seed: Optional[int] = None,
-    pipeline_parallel_size: int = 1,
-    image_max_pixels: int = 768 * 768,
-    image_min_pixels: int = 32 * 32,
-    video_fps: float = 2.0,
-    video_maxlen: int = 128,
-    batch_size: int = 1024,
+        model_name_or_path: str,
+        adapter_name_or_path: str = None,
+        dataset: str = "alpaca_en_demo",
+        dataset_dir: str = "data",
+        template: str = "default",
+        cutoff_len: int = 2048,
+        max_samples: Optional[int] = 20000,
+        vllm_config: str = "{}",
+        save_name: str = "generated_predictions.jsonl",
+        temperature: float = 0.5,
+        top_p: float = 0.7,
+        top_k: int = 50,
+        max_new_tokens: int = 2048,
+        repetition_penalty: float = 1.0,
+        skip_special_tokens: bool = True,
+        default_system: Optional[str] = None,
+        enable_thinking: bool = False,
+        seed: Optional[int] = None,
+        pipeline_parallel_size: int = 1,
+        image_max_pixels: int = 768 * 768,
+        image_min_pixels: int = 32 * 32,
+        video_fps: float = 2.0,
+        video_maxlen: int = 128,
+        batch_size: int = 1024,
 ):
     r"""Perform batch generation using vLLM engine, which supports tensor parallelism.
 
@@ -145,7 +145,7 @@ def vllm_infer(
     # Add batch process to avoid the issue of too many files opened
     for i in tqdm(range(0, len(train_dataset), batch_size), desc="Processing batched inference"):
         vllm_inputs, prompts, labels = [], [], []
-        batch = train_dataset[i : min(i + batch_size, len(train_dataset))]
+        batch = train_dataset[i: min(i + batch_size, len(train_dataset))]
 
         for j in range(len(batch["input_ids"])):
             if batch["images"][j] is not None:
@@ -212,7 +212,7 @@ def vllm_infer(
     samples_per_second = num_samples / total_time_seconds if total_time_seconds > 0 else 0
     output_tokens_per_second = total_output_tokens / total_time_seconds if total_time_seconds > 0 else 0
     total_tokens_per_second = (
-                                          total_input_tokens + total_output_tokens) / total_time_seconds if total_time_seconds > 0 else 0
+                                      total_input_tokens + total_output_tokens) / total_time_seconds if total_time_seconds > 0 else 0
 
     performance_metrics = {
         "num_samples": num_samples,
@@ -234,7 +234,7 @@ def vllm_infer(
             metrics_save_path = os.path.join(output_dir, f"inference_metrics_{os.path.basename(save_name)}.json")
         else:  # Fallback
             metrics_save_path = f"inference_metrics_{os.path.basename(save_name)}.json"
-    except:
+    except Exception:
         metrics_save_path = f"inference_metrics_{os.path.basename(save_name)}.json"
 
     with open(metrics_save_path, "w", encoding="utf-8") as f:

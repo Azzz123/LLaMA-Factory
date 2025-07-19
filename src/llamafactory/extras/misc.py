@@ -37,19 +37,16 @@ from transformers.utils.versions import require_version
 
 from . import logging
 
-
 _is_fp16_available = is_torch_npu_available() or is_torch_cuda_available()
 try:
     _is_bf16_available = is_torch_bf16_gpu_available() or (is_torch_npu_available() and torch.npu.is_bf16_supported())
 except Exception:
     _is_bf16_available = False
 
-
 if TYPE_CHECKING:
     from numpy.typing import NDArray
 
     from ..hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 
@@ -224,7 +221,7 @@ def infer_optim_dtype(model_dtype: "torch.dtype") -> "torch.dtype":
 def is_accelerator_available() -> bool:
     r"""Check if the accelerator is available."""
     return (
-        is_torch_xpu_available() or is_torch_npu_available() or is_torch_mps_available() or is_torch_cuda_available()
+            is_torch_xpu_available() or is_torch_npu_available() or is_torch_mps_available() or is_torch_cuda_available()
     )
 
 

@@ -18,7 +18,6 @@ import os
 import datasets
 import pandas as pd
 
-
 _CITATION = """\
 @article{huang2023ceval,
   title={C-Eval: A Multi-Level Multi-Discipline Chinese Evaluation Suite for Foundation Models},

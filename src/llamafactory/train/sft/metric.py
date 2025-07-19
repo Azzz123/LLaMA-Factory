@@ -27,18 +27,14 @@ from ...extras.constants import IGNORE_INDEX
 from ...extras.misc import numpify
 from ...extras.packages import is_rouge_available
 
-
 if TYPE_CHECKING:
     from transformers import EvalPrediction, PreTrainedTokenizer
-
 
 if is_jieba_available():
     import jieba  # type: ignore
 
-
 if is_nltk_available():
     from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu  # type: ignore
-
 
 if is_rouge_available():
     from rouge_chinese import Rouge  # type: ignore

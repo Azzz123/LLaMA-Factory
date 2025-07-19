@@ -27,10 +27,8 @@ from transformers import DataCollatorForSeq2Seq
 from ..extras.constants import AUDIO_PLACEHOLDER, IGNORE_INDEX, IMAGE_PLACEHOLDER
 from ..extras.packages import is_pillow_available
 
-
 if is_pillow_available():
     from PIL import Image
-
 
 if TYPE_CHECKING:
     from transformers import ProcessorMixin
@@ -122,7 +120,7 @@ class MultiModalDataCollatorForSeq2Seq(DataCollatorForSeq2Seq):
 
         fake_input_ids = []
         if (
-            self.template.mm_plugin.image_token is not None and sum(batch_imglens) == 0 and sum(batch_vidlens) == 0
+                self.template.mm_plugin.image_token is not None and sum(batch_imglens) == 0 and sum(batch_vidlens) == 0
         ):  # avoid process hanging in zero3/fsdp case
             fake_messages = [{"role": "user", "content": IMAGE_PLACEHOLDER}]
             fake_images = [Image.new("RGB", (64, 64), (255, 255, 255))]
@@ -138,7 +136,7 @@ class MultiModalDataCollatorForSeq2Seq(DataCollatorForSeq2Seq):
             batch_imglens[0] = 1
 
         if (
-            self.template.mm_plugin.audio_token is not None and sum(batch_audlens) == 0
+                self.template.mm_plugin.audio_token is not None and sum(batch_audlens) == 0
         ):  # avoid process hanging in zero3/fsdp case
             fake_messages = [{"role": "user", "content": AUDIO_PLACEHOLDER}]
             fake_audios = [np.zeros(1600)]
@@ -209,10 +207,10 @@ class MultiModalDataCollatorForSeq2Seq(DataCollatorForSeq2Seq):
                 features["position_ids"], features["rope_deltas"] = self.get_rope_func(**rope_index_kwargs)
 
         if (
-            self.model is not None
-            and getattr(self.model.config, "model_type", None)
-            in ["glm4v", "qwen2_vl", "qwen2_5_vl", "qwen2_5_omni_thinker"]
-            and ("position_ids" not in features or features["position_ids"].dim() != 3)
+                self.model is not None
+                and getattr(self.model.config, "model_type", None)
+                in ["glm4v", "qwen2_vl", "qwen2_5_vl", "qwen2_5_omni_thinker"]
+                and ("position_ids" not in features or features["position_ids"].dim() != 3)
         ):
             raise ValueError("Qwen2-VL/Qwen2.5-Omni model requires 3D position ids for mrope.")
 

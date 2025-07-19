@@ -53,16 +53,16 @@ class PairwiseDataCollatorWithPadding(MultiModalDataCollatorForSeq2Seq):
 
 
 def calculate_ppl(
-    model_name_or_path: str,
-    save_name: str = "ppl.json",
-    batch_size: int = 4,
-    stage: Literal["pt", "sft", "rm"] = "sft",
-    dataset: str = "alpaca_en_demo",
-    dataset_dir: str = "data",
-    template: str = "default",
-    cutoff_len: int = 2048,
-    max_samples: Optional[int] = None,
-    train_on_prompt: bool = False,
+        model_name_or_path: str,
+        save_name: str = "ppl.json",
+        batch_size: int = 4,
+        stage: Literal["pt", "sft", "rm"] = "sft",
+        dataset: str = "alpaca_en_demo",
+        dataset_dir: str = "data",
+        template: str = "default",
+        cutoff_len: int = 2048,
+        max_samples: Optional[int] = None,
+        train_on_prompt: bool = False,
 ):
     r"""Calculate the ppl on the dataset of the pre-trained models.
 

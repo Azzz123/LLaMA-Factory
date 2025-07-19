@@ -21,15 +21,12 @@ from datasets import DatasetDict, concatenate_datasets, interleave_datasets
 
 from ..extras import logging
 
-
 if TYPE_CHECKING:
     from datasets import Dataset, IterableDataset
 
     from ..hparams import DataArguments
 
-
 logger = logging.get_logger(__name__)
-
 
 SLOTS = list[Union[str, set[str], dict[str, str]]]
 
@@ -49,7 +46,7 @@ class DatasetModule(TypedDict):
 
 
 def merge_dataset(
-    all_datasets: list[Union["Dataset", "IterableDataset"]], data_args: "DataArguments", seed: int
+        all_datasets: list[Union["Dataset", "IterableDataset"]], data_args: "DataArguments", seed: int
 ) -> Union["Dataset", "IterableDataset"]:
     r"""Merge multiple datasets to a unified dataset."""
     if len(all_datasets) == 1:
@@ -77,10 +74,10 @@ def merge_dataset(
 
 
 def split_dataset(
-    dataset: Optional[Union["Dataset", "IterableDataset"]],
-    eval_dataset: Optional[Union["Dataset", "IterableDataset", dict[str, "Dataset"]]],
-    data_args: "DataArguments",
-    seed: int,
+        dataset: Optional[Union["Dataset", "IterableDataset"]],
+        eval_dataset: Optional[Union["Dataset", "IterableDataset", dict[str, "Dataset"]]],
+        data_args: "DataArguments",
+        seed: int,
 ) -> "DatasetDict":
     r"""Split the dataset and returns a dataset dict containing train set and validation set.
 
@@ -131,7 +128,7 @@ def get_dataset_module(dataset: Union["Dataset", "DatasetDict"]) -> "DatasetModu
             eval_dataset = {}
             for key in dataset.keys():
                 if key.startswith("validation_"):
-                    eval_dataset[key[len("validation_") :]] = dataset[key]
+                    eval_dataset[key[len("validation_"):]] = dataset[key]
 
             if len(eval_dataset):
                 dataset_module["eval_dataset"] = eval_dataset

@@ -19,14 +19,11 @@ from typing import TYPE_CHECKING, Any
 from ...extras.constants import DATA_CONFIG
 from ...extras.packages import is_gradio_available
 
-
 if is_gradio_available():
     import gradio as gr
 
-
 if TYPE_CHECKING:
     from gradio.components import Component
-
 
 PAGE_SIZE = 2
 
@@ -80,7 +77,7 @@ def get_preview(dataset_dir: str, dataset: list, page_index: int) -> tuple[int, 
         for file_name in os.listdir(data_path):
             data.extend(_load_data_file(os.path.join(data_path, file_name)))
 
-    return len(data), data[PAGE_SIZE * page_index : PAGE_SIZE * (page_index + 1)], gr.Column(visible=True)
+    return len(data), data[PAGE_SIZE * page_index: PAGE_SIZE * (page_index + 1)], gr.Column(visible=True)
 
 
 def create_preview_box(dataset_dir: "gr.Textbox", dataset: "gr.Dropdown") -> dict[str, "Component"]:

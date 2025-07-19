@@ -17,21 +17,19 @@ from typing import TYPE_CHECKING, Any, Optional
 from ...extras import logging
 from ...extras.misc import get_current_device
 
-
 if TYPE_CHECKING:
     from transformers import PretrainedConfig, PreTrainedModel
 
     from ...hparams import FinetuningArguments, ModelArguments
 
-
 logger = logging.get_logger(__name__)
 
 
 def _get_unsloth_kwargs(
-    config: "PretrainedConfig",
-    model_name_or_path: str,
-    model_args: "ModelArguments",
-    finetuning_args: "FinetuningArguments",
+        config: "PretrainedConfig",
+        model_name_or_path: str,
+        model_args: "ModelArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> dict[str, Any]:
     return {
         "model_name": model_name_or_path,
@@ -49,7 +47,7 @@ def _get_unsloth_kwargs(
 
 
 def load_unsloth_pretrained_model(
-    config: "PretrainedConfig", model_args: "ModelArguments", finetuning_args: "FinetuningArguments"
+        config: "PretrainedConfig", model_args: "ModelArguments", finetuning_args: "FinetuningArguments"
 ) -> Optional["PreTrainedModel"]:
     r"""Optionally load pretrained model with unsloth. Used in training."""
     from unsloth import FastLanguageModel  # type: ignore
@@ -66,7 +64,7 @@ def load_unsloth_pretrained_model(
 
 
 def get_unsloth_peft_model(
-    model: "PreTrainedModel", model_args: "ModelArguments", peft_kwargs: dict[str, Any]
+        model: "PreTrainedModel", model_args: "ModelArguments", peft_kwargs: dict[str, Any]
 ) -> "PreTrainedModel":
     r"""Get the peft model for the pretrained model with unsloth. Used in training."""
     from unsloth import FastLanguageModel  # type: ignore
@@ -80,10 +78,10 @@ def get_unsloth_peft_model(
 
 
 def load_unsloth_peft_model(
-    config: "PretrainedConfig",
-    model_args: "ModelArguments",
-    finetuning_args: "FinetuningArguments",
-    is_trainable: bool,
+        config: "PretrainedConfig",
+        model_args: "ModelArguments",
+        finetuning_args: "FinetuningArguments",
+        is_trainable: bool,
 ) -> "PreTrainedModel":
     r"""Load peft model with unsloth. Used in both training and inference."""
     from unsloth import FastLanguageModel  # type: ignore

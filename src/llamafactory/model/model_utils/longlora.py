@@ -29,7 +29,6 @@ from ...extras.constants import SUPPORTED_CLASS_FOR_S2ATTN
 from ...extras.misc import check_version
 from ...extras.packages import is_transformers_version_greater_than
 
-
 if not is_transformers_version_greater_than("4.48.0"):
     from transformers.modeling_flash_attention_utils import _flash_attention_forward
     from transformers.models.llama.modeling_llama import (
@@ -41,12 +40,10 @@ if not is_transformers_version_greater_than("4.48.0"):
         repeat_kv,
     )
 
-
 if TYPE_CHECKING:
     from transformers import PretrainedConfig
 
     from ...hparams import ModelArguments
-
 
 transformers_logger = transformers.utils.logging.get_logger(__name__)
 
@@ -54,15 +51,15 @@ transformers_logger = transformers.utils.logging.get_logger(__name__)
 # Modified from:
 # https://github.com/huggingface/transformers/blob/v4.40.0/src/transformers/models/llama/modeling_llama.py
 def llama_attention_forward(
-    self: "LlamaAttention",
-    hidden_states: "torch.Tensor",
-    attention_mask: Optional["torch.Tensor"] = None,
-    position_ids: Optional["torch.LongTensor"] = None,
-    past_key_value: Optional["Cache"] = None,
-    output_attentions: bool = False,
-    cache_position: Optional["torch.LongTensor"] = None,
-    position_embeddings: Optional[tuple["torch.Tensor", "torch.Tensor"]] = None,
-    **kwargs,
+        self: "LlamaAttention",
+        hidden_states: "torch.Tensor",
+        attention_mask: Optional["torch.Tensor"] = None,
+        position_ids: Optional["torch.LongTensor"] = None,
+        past_key_value: Optional["Cache"] = None,
+        output_attentions: bool = False,
+        cache_position: Optional["torch.LongTensor"] = None,
+        position_embeddings: Optional[tuple["torch.Tensor", "torch.Tensor"]] = None,
+        **kwargs,
 ) -> tuple["torch.Tensor", Optional["torch.Tensor"], Optional[tuple["torch.Tensor"]]]:
     bsz, q_len, _ = hidden_states.size()
 
@@ -96,7 +93,7 @@ def llama_attention_forward(
         def shift(state: "torch.Tensor") -> "torch.Tensor":
             state = state.transpose(1, 2)  # output: (bsz, seq_len, n_heads, head_dim)
             state = torch.cat(
-                (state[:, :, : self.num_heads // 2], state[:, :, self.num_heads // 2 :].roll(-groupsz // 2, dims=1)),
+                (state[:, :, : self.num_heads // 2], state[:, :, self.num_heads // 2:].roll(-groupsz // 2, dims=1)),
                 dim=2,
             )
             return state.reshape(bsz * num_groups, groupsz, self.num_heads, self.head_dim).transpose(1, 2)
@@ -122,7 +119,7 @@ def llama_attention_forward(
         attn_output = torch.cat(
             (
                 attn_output[:, :, : self.num_heads // 2],
-                attn_output[:, :, self.num_heads // 2 :].roll(groupsz // 2, dims=1),
+                attn_output[:, :, self.num_heads // 2:].roll(groupsz // 2, dims=1),
             ),
             dim=2,
         )
@@ -139,15 +136,15 @@ def llama_attention_forward(
 # Modified from:
 # https://github.com/huggingface/transformers/blob/v4.40.0/src/transformers/models/llama/modeling_llama.py
 def llama_flash_attention_2_forward(
-    self: "LlamaFlashAttention2",
-    hidden_states: "torch.Tensor",
-    attention_mask: Optional["torch.Tensor"] = None,
-    position_ids: Optional["torch.LongTensor"] = None,
-    past_key_value: Optional["Cache"] = None,
-    output_attentions: bool = False,
-    cache_position: Optional["torch.LongTensor"] = None,
-    position_embeddings: Optional[tuple["torch.Tensor", "torch.Tensor"]] = None,
-    **kwargs,
+        self: "LlamaFlashAttention2",
+        hidden_states: "torch.Tensor",
+        attention_mask: Optional["torch.Tensor"] = None,
+        position_ids: Optional["torch.LongTensor"] = None,
+        past_key_value: Optional["Cache"] = None,
+        output_attentions: bool = False,
+        cache_position: Optional["torch.LongTensor"] = None,
+        position_embeddings: Optional[tuple["torch.Tensor", "torch.Tensor"]] = None,
+        **kwargs,
 ) -> tuple["torch.Tensor", Optional["torch.Tensor"], Optional[tuple["torch.Tensor"]]]:
     # LlamaFlashAttention2 attention does not support output_attentions
     output_attentions = False
@@ -204,7 +201,7 @@ def llama_flash_attention_2_forward(
 
         def shift(state: "torch.Tensor") -> "torch.Tensor":
             state = torch.cat(
-                (state[:, :, : self.num_heads // 2], state[:, :, self.num_heads // 2 :].roll(-groupsz // 2, dims=1)),
+                (state[:, :, : self.num_heads // 2], state[:, :, self.num_heads // 2:].roll(-groupsz // 2, dims=1)),
                 dim=2,
             )
             return state.reshape(bsz * num_groups, groupsz, self.num_heads, self.head_dim)
@@ -230,7 +227,7 @@ def llama_flash_attention_2_forward(
         attn_output = torch.cat(
             (
                 attn_output[:, :, : self.num_heads // 2],
-                attn_output[:, :, self.num_heads // 2 :].roll(groupsz // 2, dims=1),
+                attn_output[:, :, self.num_heads // 2:].roll(groupsz // 2, dims=1),
             ),
             dim=2,
         )
@@ -247,15 +244,15 @@ def llama_flash_attention_2_forward(
 # Modified from:
 # https://github.com/huggingface/transformers/blob/v4.40.0/src/transformers/models/llama/modeling_llama.py
 def llama_sdpa_attention_forward(
-    self: "LlamaSdpaAttention",
-    hidden_states: "torch.Tensor",
-    attention_mask: Optional["torch.Tensor"] = None,
-    position_ids: Optional["torch.LongTensor"] = None,
-    past_key_value: Optional["Cache"] = None,
-    output_attentions: bool = False,
-    cache_position: Optional["torch.LongTensor"] = None,
-    position_embeddings: Optional[tuple["torch.Tensor", "torch.Tensor"]] = None,
-    **kwargs,
+        self: "LlamaSdpaAttention",
+        hidden_states: "torch.Tensor",
+        attention_mask: Optional["torch.Tensor"] = None,
+        position_ids: Optional["torch.LongTensor"] = None,
+        past_key_value: Optional["Cache"] = None,
+        output_attentions: bool = False,
+        cache_position: Optional["torch.LongTensor"] = None,
+        position_embeddings: Optional[tuple["torch.Tensor", "torch.Tensor"]] = None,
+        **kwargs,
 ) -> tuple["torch.Tensor", Optional["torch.Tensor"], Optional[tuple["torch.Tensor"]]]:
     if output_attentions:
         transformers_logger.warning_once(
@@ -304,7 +301,7 @@ def llama_sdpa_attention_forward(
         def shift(state: "torch.Tensor") -> "torch.Tensor":
             state = state.transpose(1, 2)  # output: (bsz, seq_len, n_heads, head_dim)
             state = torch.cat(
-                (state[:, :, : self.num_heads // 2], state[:, :, self.num_heads // 2 :].roll(-groupsz // 2, dims=1)),
+                (state[:, :, : self.num_heads // 2], state[:, :, self.num_heads // 2:].roll(-groupsz // 2, dims=1)),
                 dim=2,
             )
             return state.reshape(bsz * num_groups, groupsz, self.num_heads, self.head_dim).transpose(1, 2)
@@ -338,7 +335,7 @@ def llama_sdpa_attention_forward(
         attn_output = torch.cat(
             (
                 attn_output[:, :, : self.num_heads // 2],
-                attn_output[:, :, self.num_heads // 2 :].roll(groupsz // 2, dims=1),
+                attn_output[:, :, self.num_heads // 2:].roll(groupsz // 2, dims=1),
             ),
             dim=2,
         )

@@ -15,28 +15,26 @@
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Optional
 
-from ...extras import logging
-from ..data_utils import Role
 from .processor_utils import DatasetProcessor, infer_seqlen
-
+from ..data_utils import Role
+from ...extras import logging
 
 if TYPE_CHECKING:
     from ..mm_plugin import AudioInput, ImageInput, VideoInput
-
 
 logger = logging.get_logger(__name__)
 
 
 class UnsupervisedDatasetProcessor(DatasetProcessor):
     def _encode_data_example(
-        self,
-        prompt: list[dict[str, str]],
-        response: list[dict[str, str]],
-        system: Optional[str],
-        tools: Optional[str],
-        images: list["ImageInput"],
-        videos: list["VideoInput"],
-        audios: list["AudioInput"],
+            self,
+            prompt: list[dict[str, str]],
+            response: list[dict[str, str]],
+            system: Optional[str],
+            tools: Optional[str],
+            images: list["ImageInput"],
+            videos: list["VideoInput"],
+            audios: list["AudioInput"],
     ) -> tuple[list[int], list[int]]:
         if len(response) == 1:
             messages = prompt + response

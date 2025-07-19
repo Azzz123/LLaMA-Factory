@@ -1,12 +1,11 @@
-import json
 import argparse
+import json
 import os
-from collections import defaultdict, Counter
+from collections import Counter
 
 
 def diff_events(pred_event, gold_event):
-    """
-    精细化地比较两个事件对象的差异，并返回一个描述差异的列表。
+    """精细化地比较两个事件对象的差异，并返回一个描述差异的列表。
     """
     diffs = []
     # 1. 比较 trigger
@@ -31,8 +30,7 @@ def diff_events(pred_event, gold_event):
 
 
 def evaluate_causality_extraction(prediction_file, output_dir):
-    """
-    计算P/R/F1，将结果保存到文件，并对内容不一致的TP进行详细的、量化的差异分析。
+    """计算P/R/F1，将结果保存到文件，并对内容不一致的TP进行详细的、量化的差异分析。
     """
     total_tp, total_fp, total_fn = 0, 0, 0
     malformed_predictions = 0
@@ -42,7 +40,7 @@ def evaluate_causality_extraction(prediction_file, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    with open(prediction_file, 'r', encoding='utf-8') as f:
+    with open(prediction_file, encoding='utf-8') as f:
         for line_num, line in enumerate(f, 1):
             try:
                 data = json.loads(line.strip())

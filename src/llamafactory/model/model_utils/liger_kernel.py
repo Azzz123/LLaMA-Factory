@@ -17,21 +17,19 @@ from typing import TYPE_CHECKING
 
 from ...extras import logging
 
-
 if TYPE_CHECKING:
     from transformers import PretrainedConfig
 
     from ...hparams import ModelArguments
 
-
 logger = logging.get_logger(__name__)
 
 
 def apply_liger_kernel(
-    config: "PretrainedConfig",
-    model_args: "ModelArguments",
-    is_trainable: bool,
-    require_logits: bool,
+        config: "PretrainedConfig",
+        model_args: "ModelArguments",
+        is_trainable: bool,
+        require_logits: bool,
 ) -> None:
     if not is_trainable or not model_args.enable_liger_kernel:
         return

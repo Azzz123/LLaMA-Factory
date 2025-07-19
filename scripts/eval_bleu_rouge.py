@@ -14,12 +14,11 @@
 
 import json
 import logging
-import time
 import os
+import time
 
 import fire
 from datasets import load_dataset
-
 
 try:
     import jieba  # type: ignore

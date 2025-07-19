@@ -19,12 +19,10 @@ from transformers.utils import is_flash_attn_2_available, is_torch_sdpa_availabl
 from ...extras import logging
 from ...extras.constants import AttentionFunction
 
-
 if TYPE_CHECKING:
     from transformers import PretrainedConfig
 
     from ...hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 

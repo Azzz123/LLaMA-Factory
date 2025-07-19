@@ -37,11 +37,9 @@ from ..extras import logging
 from ..extras.constants import TRAINER_LOG, V_HEAD_SAFE_WEIGHTS_NAME, V_HEAD_WEIGHTS_NAME
 from ..extras.misc import get_peak_memory, is_env_enabled, use_ray
 
-
 if is_safetensors_available():
     from safetensors import safe_open
     from safetensors.torch import save_file
-
 
 if TYPE_CHECKING:
     from transformers import TrainerControl, TrainerState, TrainingArguments
@@ -49,12 +47,11 @@ if TYPE_CHECKING:
 
     from ..hparams import DataArguments, FinetuningArguments, GeneratingArguments, ModelArguments
 
-
 logger = logging.get_logger(__name__)
 
 
 def fix_valuehead_checkpoint(
-    model: "AutoModelForCausalLMWithValueHead", output_dir: str, safe_serialization: bool
+        model: "AutoModelForCausalLMWithValueHead", output_dir: str, safe_serialization: bool
 ) -> None:
     r"""Fix the valuehead checkpoint files.
 
@@ -227,9 +224,9 @@ class LogCallback(TrainerCallback):
     @override
     def on_init_end(self, args: "TrainingArguments", state: "TrainerState", control: "TrainerControl", **kwargs):
         if (
-            args.should_save
-            and os.path.exists(os.path.join(args.output_dir, TRAINER_LOG))
-            and args.overwrite_output_dir
+                args.should_save
+                and os.path.exists(os.path.join(args.output_dir, TRAINER_LOG))
+                and args.overwrite_output_dir
         ):
             logger.warning_rank0_once("Previous trainer log in this folder will be deleted.")
             os.remove(os.path.join(args.output_dir, TRAINER_LOG))
@@ -293,8 +290,8 @@ class LogCallback(TrainerCallback):
 
         if is_env_enabled("RECORD_VRAM"):
             vram_allocated, vram_reserved = get_peak_memory()
-            logs["vram_allocated"] = round(vram_allocated / (1024**3), 2)
-            logs["vram_reserved"] = round(vram_reserved / (1024**3), 2)
+            logs["vram_allocated"] = round(vram_allocated / (1024 ** 3), 2)
+            logs["vram_reserved"] = round(vram_reserved / (1024 ** 3), 2)
 
         logs = {k: v for k, v in logs.items() if v is not None}
         if self.webui_mode and all(key in logs for key in ("loss", "lr", "epoch")):
@@ -310,7 +307,7 @@ class LogCallback(TrainerCallback):
 
     @override
     def on_prediction_step(
-        self, args: "TrainingArguments", state: "TrainerState", control: "TrainerControl", **kwargs
+            self, args: "TrainingArguments", state: "TrainerState", control: "TrainerControl", **kwargs
     ):
         if self.do_train:
             return
@@ -343,11 +340,11 @@ class ReporterCallback(TrainerCallback):
     r"""A callback for reporting training status to external logger."""
 
     def __init__(
-        self,
-        model_args: "ModelArguments",
-        data_args: "DataArguments",
-        finetuning_args: "FinetuningArguments",
-        generating_args: "GeneratingArguments",
+            self,
+            model_args: "ModelArguments",
+            data_args: "DataArguments",
+            finetuning_args: "FinetuningArguments",
+            generating_args: "GeneratingArguments",
     ) -> None:
         self.model_args = model_args
         self.data_args = data_args

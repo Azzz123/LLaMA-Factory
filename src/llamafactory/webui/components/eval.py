@@ -14,15 +14,13 @@
 
 from typing import TYPE_CHECKING
 
-from ...extras.packages import is_gradio_available
+from .data import create_preview_box
 from ..common import DEFAULT_DATA_DIR
 from ..control import list_datasets
-from .data import create_preview_box
-
+from ...extras.packages import is_gradio_available
 
 if is_gradio_available():
     import gradio as gr
-
 
 if TYPE_CHECKING:
     from gradio.components import Component

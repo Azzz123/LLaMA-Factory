@@ -44,10 +44,8 @@ import torch.nn.functional as F
 
 from ...extras import logging
 
-
 if TYPE_CHECKING:
     from ...hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 

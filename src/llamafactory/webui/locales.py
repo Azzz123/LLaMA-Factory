@@ -2944,7 +2944,6 @@ LOCALES = {
     },
 }
 
-
 ALERTS = {
     "err_conflict": {
         "en": "A process is in running, please abort it first.",

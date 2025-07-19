@@ -14,13 +14,11 @@
 
 from typing import TYPE_CHECKING
 
-from ...extras import logging
 from .visual import COMPOSITE_MODELS
-
+from ...extras import logging
 
 if TYPE_CHECKING:
     from transformers import PretrainedConfig, PreTrainedModel, PreTrainedTokenizer
-
 
 logger = logging.get_logger(__name__)
 
@@ -69,7 +67,7 @@ def find_expanded_modules(model: "PreTrainedModel", target_modules: list[str], n
     module_names = []
     for name, _ in model.named_modules():
         if any(target_module in name for target_module in target_modules) and any(
-            trainable_layer in name for trainable_layer in trainable_layers
+                trainable_layer in name for trainable_layer in trainable_layers
         ):
             module_names.append(name)
 

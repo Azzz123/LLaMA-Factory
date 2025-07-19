@@ -1,14 +1,14 @@
-import json
 import argparse
+import ast  # 引入ast模块，用于安全地解析字符串化的Python字面量
+import json
 import os
 import re
+
 from tqdm import tqdm
-import ast  # 引入ast模块，用于安全地解析字符串化的Python字面量
 
 
 def extract_and_purify_json(raw_response):
-    """
-    【通用版】从模型的原始、混乱的输出字符串中，稳健地提取并修复JSON。
+    """【通用版】从模型的原始、混乱的输出字符串中，稳健地提取并修复JSON。
     """
     if not isinstance(raw_response, str):
         return "[]"
@@ -67,8 +67,7 @@ def extract_and_purify_json(raw_response):
 
 
 def main(prediction_file, output_file=None):
-    """
-    读取模型的预测文件，用通用清洗逻辑处理'predict'字段，并保存为新文件。
+    """读取模型的预测文件，用通用清洗逻辑处理'predict'字段，并保存为新文件。
     """
     if output_file is None:
         base, ext = os.path.splitext(prediction_file)
@@ -77,7 +76,7 @@ def main(prediction_file, output_file=None):
     cleaned_data = []
 
     print(f"Reading raw predictions from: {prediction_file}")
-    with open(prediction_file, 'r', encoding='utf-8') as f:
+    with open(prediction_file, encoding='utf-8') as f:
         lines = f.readlines()
 
     for line in tqdm(lines, desc="Universally Cleaning and Minifying"):

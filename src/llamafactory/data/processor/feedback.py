@@ -15,29 +15,27 @@
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Optional
 
+from .processor_utils import DatasetProcessor, infer_seqlen
 from ...extras import logging
 from ...extras.constants import IGNORE_INDEX
-from .processor_utils import DatasetProcessor, infer_seqlen
-
 
 if TYPE_CHECKING:
     from ..mm_plugin import AudioInput, ImageInput, VideoInput
-
 
 logger = logging.get_logger(__name__)
 
 
 class FeedbackDatasetProcessor(DatasetProcessor):
     def _encode_data_example(
-        self,
-        prompt: list[dict[str, str]],
-        response: list[dict[str, str]],
-        kl_response: list[dict[str, str]],
-        system: Optional[str],
-        tools: Optional[str],
-        images: list["ImageInput"],
-        videos: list["VideoInput"],
-        audios: list["AudioInput"],
+            self,
+            prompt: list[dict[str, str]],
+            response: list[dict[str, str]],
+            kl_response: list[dict[str, str]],
+            system: Optional[str],
+            tools: Optional[str],
+            images: list["ImageInput"],
+            videos: list["VideoInput"],
+            audios: list["AudioInput"],
     ) -> tuple[list[int], list[int], list[int], list[int], bool]:
         if response[0]["content"]:  # desired example
             kto_tag = True

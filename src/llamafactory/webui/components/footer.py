@@ -17,10 +17,8 @@ from typing import TYPE_CHECKING
 from ...extras.misc import get_current_memory
 from ...extras.packages import is_gradio_available
 
-
 if is_gradio_available():
     import gradio as gr
-
 
 if TYPE_CHECKING:
     from gradio.components import Component
@@ -29,8 +27,8 @@ if TYPE_CHECKING:
 def get_device_memory() -> "gr.Slider":
     free, total = get_current_memory()
     if total != -1:
-        used = round((total - free) / (1024**3), 2)
-        total = round(total / (1024**3), 2)
+        used = round((total - free) / (1024 ** 3), 2)
+        total = round(total / (1024 ** 3), 2)
         return gr.Slider(minimum=0, maximum=total, value=used, step=0.01, visible=True)
     else:
         return gr.Slider(visible=False)

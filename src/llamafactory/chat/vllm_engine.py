@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from typing_extensions import override
 
+from .base_engine import BaseEngine, Response
 from ..data import get_template_and_fix_tokenizer
 from ..extras import logging
 from ..extras.constants import AUDIO_PLACEHOLDER, IMAGE_PLACEHOLDER, VIDEO_PLACEHOLDER, EngineName
@@ -26,29 +27,25 @@ from ..extras.packages import is_vllm_available
 from ..model import load_config, load_tokenizer
 from ..model.model_utils.quantization import QuantizationMethod
 from ..model.model_utils.visual import LlavaMultiModalProjectorForYiVLForVLLM
-from .base_engine import BaseEngine, Response
-
 
 if is_vllm_available():
     from vllm import AsyncEngineArgs, AsyncLLMEngine, RequestOutput, SamplingParams
     from vllm.lora.request import LoRARequest
 
-
 if TYPE_CHECKING:
     from ..data.mm_plugin import AudioInput, ImageInput, VideoInput
     from ..hparams import DataArguments, FinetuningArguments, GeneratingArguments, ModelArguments
-
 
 logger = logging.get_logger(__name__)
 
 
 class VllmEngine(BaseEngine):
     def __init__(
-        self,
-        model_args: "ModelArguments",
-        data_args: "DataArguments",
-        finetuning_args: "FinetuningArguments",
-        generating_args: "GeneratingArguments",
+            self,
+            model_args: "ModelArguments",
+            data_args: "DataArguments",
+            finetuning_args: "FinetuningArguments",
+            generating_args: "GeneratingArguments",
     ) -> None:
         self.name = EngineName.VLLM
         self.model_args = model_args
@@ -101,14 +98,14 @@ class VllmEngine(BaseEngine):
             self.lora_request = None
 
     async def _generate(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> AsyncIterator["RequestOutput"]:
         request_id = f"chatcmpl-{uuid.uuid4().hex}"
         if images is not None and not any(IMAGE_PLACEHOLDER in message["content"] for message in messages):
@@ -158,9 +155,10 @@ class VllmEngine(BaseEngine):
         sampling_params = SamplingParams(
             n=num_return_sequences,
             repetition_penalty=(
-                repetition_penalty if repetition_penalty is not None else self.generating_args["repetition_penalty"]
-            )
-            or 1.0,  # repetition_penalty must > 0
+                                   repetition_penalty if repetition_penalty is not None else self.generating_args[
+                                       "repetition_penalty"]
+                               )
+                               or 1.0,  # repetition_penalty must > 0
             temperature=temperature if temperature is not None else self.generating_args["temperature"],
             top_p=(top_p if top_p is not None else self.generating_args["top_p"]) or 1.0,  # top_p must > 0
             top_k=(top_k if top_k is not None else self.generating_args["top_k"]) or -1,  # top_k must > 0
@@ -209,14 +207,14 @@ class VllmEngine(BaseEngine):
 
     @override
     async def chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> list["Response"]:
         final_output = None
         generator = await self._generate(messages, system, tools, images, videos, audios, **input_kwargs)
@@ -238,26 +236,26 @@ class VllmEngine(BaseEngine):
 
     @override
     async def stream_chat(
-        self,
-        messages: list[dict[str, str]],
-        system: Optional[str] = None,
-        tools: Optional[str] = None,
-        images: Optional[list["ImageInput"]] = None,
-        videos: Optional[list["VideoInput"]] = None,
-        audios: Optional[list["AudioInput"]] = None,
-        **input_kwargs,
+            self,
+            messages: list[dict[str, str]],
+            system: Optional[str] = None,
+            tools: Optional[str] = None,
+            images: Optional[list["ImageInput"]] = None,
+            videos: Optional[list["VideoInput"]] = None,
+            audios: Optional[list["AudioInput"]] = None,
+            **input_kwargs,
     ) -> AsyncGenerator[str, None]:
         generated_text = ""
         generator = await self._generate(messages, system, tools, images, videos, audios, **input_kwargs)
         async for result in generator:
-            delta_text = result.outputs[0].text[len(generated_text) :]
+            delta_text = result.outputs[0].text[len(generated_text):]
             generated_text = result.outputs[0].text
             yield delta_text
 
     @override
     async def get_scores(
-        self,
-        batch_input: list[str],
-        **input_kwargs,
+            self,
+            batch_input: list[str],
+            **input_kwargs,
     ) -> list[float]:
         raise NotImplementedError("vLLM engine does not support `get_scores`.")

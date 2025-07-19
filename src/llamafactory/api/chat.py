@@ -21,11 +21,6 @@ import uuid
 from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING, Optional
 
-from ..data import Role as DataRole
-from ..extras import logging
-from ..extras.constants import AUDIO_PLACEHOLDER, IMAGE_PLACEHOLDER, VIDEO_PLACEHOLDER
-from ..extras.misc import is_env_enabled
-from ..extras.packages import is_fastapi_available, is_pillow_available, is_requests_available
 from .common import dictify, jsonify
 from .protocol import (
     ChatCompletionMessage,
@@ -40,25 +35,25 @@ from .protocol import (
     Role,
     ScoreEvaluationResponse,
 )
-
+from ..data import Role as DataRole
+from ..extras import logging
+from ..extras.constants import AUDIO_PLACEHOLDER, IMAGE_PLACEHOLDER, VIDEO_PLACEHOLDER
+from ..extras.misc import is_env_enabled
+from ..extras.packages import is_fastapi_available, is_pillow_available, is_requests_available
 
 if is_fastapi_available():
     from fastapi import HTTPException, status
 
-
 if is_pillow_available():
     from PIL import Image
 
-
 if is_requests_available():
     import requests
-
 
 if TYPE_CHECKING:
     from ..chat import ChatModel
     from ..data.mm_plugin import AudioInput, ImageInput, VideoInput
     from .protocol import ChatCompletionRequest, ScoreEvaluationRequest
-
 
 logger = logging.get_logger(__name__)
 ROLE_MAPPING = {
@@ -71,7 +66,7 @@ ROLE_MAPPING = {
 
 
 def _process_request(
-    request: "ChatCompletionRequest",
+        request: "ChatCompletionRequest",
 ) -> tuple[
     list[dict[str, str]],
     Optional[str],
@@ -170,11 +165,11 @@ def _process_request(
 
 
 def _create_stream_chat_completion_chunk(
-    completion_id: str,
-    model: str,
-    delta: "ChatCompletionMessage",
-    index: Optional[int] = 0,
-    finish_reason: Optional["Finish"] = None,
+        completion_id: str,
+        model: str,
+        delta: "ChatCompletionMessage",
+        index: Optional[int] = 0,
+        finish_reason: Optional["Finish"] = None,
 ) -> str:
     choice_data = ChatCompletionStreamResponseChoice(index=index, delta=delta, finish_reason=finish_reason)
     chunk = ChatCompletionStreamResponse(id=completion_id, model=model, choices=[choice_data])
@@ -182,7 +177,7 @@ def _create_stream_chat_completion_chunk(
 
 
 async def create_chat_completion_response(
-    request: "ChatCompletionRequest", chat_model: "ChatModel"
+        request: "ChatCompletionRequest", chat_model: "ChatModel"
 ) -> "ChatCompletionResponse":
     completion_id = f"chatcmpl-{uuid.uuid4().hex}"
     input_messages, system, tools, images, videos, audios = _process_request(request)
@@ -236,7 +231,7 @@ async def create_chat_completion_response(
 
 
 async def create_stream_chat_completion_response(
-    request: "ChatCompletionRequest", chat_model: "ChatModel"
+        request: "ChatCompletionRequest", chat_model: "ChatModel"
 ) -> AsyncGenerator[str, None]:
     completion_id = f"chatcmpl-{uuid.uuid4().hex}"
     input_messages, system, tools, images, videos, audios = _process_request(request)
@@ -250,18 +245,18 @@ async def create_stream_chat_completion_response(
         completion_id=completion_id, model=request.model, delta=ChatCompletionMessage(role=Role.ASSISTANT, content="")
     )
     async for new_token in chat_model.astream_chat(
-        input_messages,
-        system,
-        tools,
-        images,
-        videos,
-        audios,
-        do_sample=request.do_sample,
-        temperature=request.temperature,
-        top_p=request.top_p,
-        max_new_tokens=request.max_tokens,
-        repetition_penalty=request.presence_penalty,
-        stop=request.stop,
+            input_messages,
+            system,
+            tools,
+            images,
+            videos,
+            audios,
+            do_sample=request.do_sample,
+            temperature=request.temperature,
+            top_p=request.top_p,
+            max_new_tokens=request.max_tokens,
+            repetition_penalty=request.presence_penalty,
+            stop=request.stop,
     ):
         if len(new_token) != 0:
             yield _create_stream_chat_completion_chunk(
@@ -275,7 +270,7 @@ async def create_stream_chat_completion_response(
 
 
 async def create_score_evaluation_response(
-    request: "ScoreEvaluationRequest", chat_model: "ChatModel"
+        request: "ScoreEvaluationRequest", chat_model: "ChatModel"
 ) -> "ScoreEvaluationResponse":
     score_id = f"scoreval-{uuid.uuid4().hex}"
     if len(request.messages) == 0:

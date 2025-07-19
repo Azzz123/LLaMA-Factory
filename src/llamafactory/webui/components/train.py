@@ -16,17 +16,15 @@ from typing import TYPE_CHECKING
 
 from transformers.trainer_utils import SchedulerType
 
+from .data import create_preview_box
+from ..common import DEFAULT_DATA_DIR
+from ..control import change_stage, list_checkpoints, list_config_paths, list_datasets, list_output_dirs
 from ...extras.constants import TRAINING_STAGES
 from ...extras.misc import get_device_count
 from ...extras.packages import is_gradio_available
-from ..common import DEFAULT_DATA_DIR
-from ..control import change_stage, list_checkpoints, list_config_paths, list_datasets, list_output_dirs
-from .data import create_preview_box
-
 
 if is_gradio_available():
     import gradio as gr
-
 
 if TYPE_CHECKING:
     from gradio.components import Component

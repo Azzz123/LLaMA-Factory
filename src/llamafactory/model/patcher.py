@@ -21,9 +21,6 @@ from transformers import GenerationMixin, PreTrainedModel, PreTrainedTokenizerBa
 from transformers.integrations import is_deepspeed_zero3_enabled
 from transformers.modeling_utils import is_fsdp_enabled
 
-from ..extras import logging
-from ..extras.misc import infer_optim_dtype
-from ..extras.packages import is_transformers_version_greater_than
 from .model_utils.attention import configure_attn_implementation, print_attn_implementation
 from .model_utils.checkpointing import prepare_model_for_training
 from .model_utils.embedding import resize_embedding_layer
@@ -35,14 +32,15 @@ from .model_utils.quantization import configure_quantization
 from .model_utils.rope import configure_rope
 from .model_utils.valuehead import prepare_valuehead_model
 from .model_utils.visual import autocast_projector_dtype, configure_visual_model
-
+from ..extras import logging
+from ..extras.misc import infer_optim_dtype
+from ..extras.packages import is_transformers_version_greater_than
 
 if TYPE_CHECKING:
     from transformers import PretrainedConfig, PreTrainedTokenizer, ProcessorMixin
     from trl import AutoModelForCausalLMWithValueHead
 
     from ..hparams import ModelArguments
-
 
 logger = logging.get_logger(__name__)
 
@@ -72,9 +70,9 @@ def patch_tokenizer(tokenizer: "PreTrainedTokenizer", model_args: "ModelArgument
 
 
 def patch_processor(
-    processor: "ProcessorMixin",
-    tokenizer: "PreTrainedTokenizer",
-    model_args: "ModelArguments",
+        processor: "ProcessorMixin",
+        tokenizer: "PreTrainedTokenizer",
+        model_args: "ModelArguments",
 ) -> None:
     setattr(processor, "tokenizer", tokenizer)
     setattr(processor, "image_max_pixels", model_args.image_max_pixels)
@@ -90,11 +88,11 @@ def patch_processor(
 
 
 def patch_config(
-    config: "PretrainedConfig",
-    tokenizer: "PreTrainedTokenizer",
-    model_args: "ModelArguments",
-    init_kwargs: dict[str, Any],
-    is_trainable: bool,
+        config: "PretrainedConfig",
+        tokenizer: "PreTrainedTokenizer",
+        model_args: "ModelArguments",
+        init_kwargs: dict[str, Any],
+        is_trainable: bool,
 ) -> None:
     if model_args.compute_dtype is None:  # priority: bf16 > fp16 > fp32
         if model_args.infer_dtype != "auto" and not is_trainable:
@@ -152,22 +150,22 @@ def patch_config(
 
 
 def patch_model(
-    model: "PreTrainedModel",
-    tokenizer: "PreTrainedTokenizer",
-    model_args: "ModelArguments",
-    is_trainable: bool,
-    add_valuehead: bool,
+        model: "PreTrainedModel",
+        tokenizer: "PreTrainedTokenizer",
+        model_args: "ModelArguments",
+        is_trainable: bool,
+        add_valuehead: bool,
 ) -> None:
     gen_config = model.generation_config  # check and fix generation config
     if not gen_config.do_sample and (
-        (gen_config.temperature is not None and gen_config.temperature != 1.0)
-        or (gen_config.top_p is not None and gen_config.top_p != 1.0)
-        or (gen_config.typical_p is not None and gen_config.typical_p != 1.0)
+            (gen_config.temperature is not None and gen_config.temperature != 1.0)
+            or (gen_config.top_p is not None and gen_config.top_p != 1.0)
+            or (gen_config.typical_p is not None and gen_config.typical_p != 1.0)
     ):
         gen_config.do_sample = True
 
     if getattr(model.config, "model_type", None) not in ["minicpmv", "minicpmo"] and "GenerationMixin" not in str(
-        model.generate.__func__
+            model.generate.__func__
     ):
         model.generate = MethodType(GenerationMixin.generate, model)
 

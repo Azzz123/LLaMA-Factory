@@ -17,14 +17,13 @@
 
 from typing import TYPE_CHECKING, Optional
 
+from .metric import ComputeAccuracy
+from .trainer import PairwiseTrainer
+from ..callbacks import fix_valuehead_checkpoint
+from ..trainer_utils import create_modelcard_and_push
 from ...data import PairwiseDataCollatorWithPadding, get_dataset, get_template_and_fix_tokenizer
 from ...extras.ploting import plot_loss
 from ...model import load_model, load_tokenizer
-from ..callbacks import fix_valuehead_checkpoint
-from ..trainer_utils import create_modelcard_and_push
-from .metric import ComputeAccuracy
-from .trainer import PairwiseTrainer
-
 
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
@@ -33,11 +32,11 @@ if TYPE_CHECKING:
 
 
 def run_rm(
-    model_args: "ModelArguments",
-    data_args: "DataArguments",
-    training_args: "Seq2SeqTrainingArguments",
-    finetuning_args: "FinetuningArguments",
-    callbacks: Optional[list["TrainerCallback"]] = None,
+        model_args: "ModelArguments",
+        data_args: "DataArguments",
+        training_args: "Seq2SeqTrainingArguments",
+        finetuning_args: "FinetuningArguments",
+        callbacks: Optional[list["TrainerCallback"]] = None,
 ):
     tokenizer_module = load_tokenizer(model_args)
     tokenizer = tokenizer_module["tokenizer"]

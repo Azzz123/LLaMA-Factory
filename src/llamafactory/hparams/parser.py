@@ -29,21 +29,19 @@ from transformers.trainer_utils import get_last_checkpoint
 from transformers.training_args import ParallelMode
 from transformers.utils import is_torch_bf16_gpu_available, is_torch_npu_available
 
-from ..extras import logging
-from ..extras.constants import CHECKPOINT_NAMES, EngineName
-from ..extras.misc import check_dependencies, check_version, get_current_device, is_env_enabled
 from .data_args import DataArguments
 from .evaluation_args import EvaluationArguments
 from .finetuning_args import FinetuningArguments
 from .generating_args import GeneratingArguments
 from .model_args import ModelArguments
 from .training_args import RayArguments, TrainingArguments
-
+from ..extras import logging
+from ..extras.constants import CHECKPOINT_NAMES, EngineName
+from ..extras.misc import check_dependencies, check_version, get_current_device, is_env_enabled
 
 logger = logging.get_logger(__name__)
 
 check_dependencies()
-
 
 _TRAIN_ARGS = [ModelArguments, DataArguments, TrainingArguments, FinetuningArguments, GeneratingArguments]
 _TRAIN_CLS = tuple[ModelArguments, DataArguments, TrainingArguments, FinetuningArguments, GeneratingArguments]
@@ -71,7 +69,8 @@ def read_args(args: Optional[Union[dict[str, Any], list[str]]] = None) -> Union[
 
 
 def _parse_args(
-    parser: "HfArgumentParser", args: Optional[Union[dict[str, Any], list[str]]] = None, allow_extra_keys: bool = False
+        parser: "HfArgumentParser", args: Optional[Union[dict[str, Any], list[str]]] = None,
+        allow_extra_keys: bool = False
 ) -> tuple[Any]:
     args = read_args(args)
     if isinstance(args, dict):
@@ -103,9 +102,9 @@ def _set_env_vars() -> None:
 
 
 def _verify_model_args(
-    model_args: "ModelArguments",
-    data_args: "DataArguments",
-    finetuning_args: "FinetuningArguments",
+        model_args: "ModelArguments",
+        data_args: "DataArguments",
+        finetuning_args: "FinetuningArguments",
 ) -> None:
     if model_args.adapter_name_or_path is not None and finetuning_args.finetuning_type != "lora":
         raise ValueError("Adapter is only valid for the LoRA method.")
@@ -132,9 +131,9 @@ def _verify_model_args(
 
 
 def _check_extra_dependencies(
-    model_args: "ModelArguments",
-    finetuning_args: "FinetuningArguments",
-    training_args: Optional["TrainingArguments"] = None,
+        model_args: "ModelArguments",
+        finetuning_args: "FinetuningArguments",
+        training_args: Optional["TrainingArguments"] = None,
 ) -> None:
     if model_args.use_unsloth:
         check_version("unsloth", mandatory=True)
@@ -255,7 +254,7 @@ def get_train_args(args: Optional[Union[dict[str, Any], list[str]]] = None) -> _
         raise ValueError("Please specify dataset for training.")
 
     if (training_args.do_eval or training_args.do_predict) and (
-        data_args.eval_dataset is None and data_args.val_size < 1e-6
+            data_args.eval_dataset is None and data_args.val_size < 1e-6
     ):
         raise ValueError("Please specify dataset for evaluation.")
 
@@ -309,11 +308,11 @@ def get_train_args(args: Optional[Union[dict[str, Any], list[str]]] = None) -> _
     _check_extra_dependencies(model_args, finetuning_args, training_args)
 
     if (
-        training_args.do_train
-        and finetuning_args.finetuning_type == "lora"
-        and model_args.quantization_bit is None
-        and model_args.resize_vocab
-        and finetuning_args.additional_target is None
+            training_args.do_train
+            and finetuning_args.finetuning_type == "lora"
+            and model_args.quantization_bit is None
+            and model_args.resize_vocab
+            and finetuning_args.additional_target is None
     ):
         logger.warning_rank0(
             "Remember to add embedding layers to `additional_target` to make the added tokens trainable."
@@ -326,9 +325,9 @@ def get_train_args(args: Optional[Union[dict[str, Any], list[str]]] = None) -> _
         logger.warning_rank0("We recommend enable mixed precision training.")
 
     if (
-        training_args.do_train
-        and (finetuning_args.use_galore or finetuning_args.use_apollo)
-        and not finetuning_args.pure_bf16
+            training_args.do_train
+            and (finetuning_args.use_galore or finetuning_args.use_apollo)
+            and not finetuning_args.pure_bf16
     ):
         logger.warning_rank0(
             "Using GaLore or APOLLO with mixed precision training may significantly increases GPU memory usage."
@@ -353,9 +352,9 @@ def get_train_args(args: Optional[Union[dict[str, Any], list[str]]] = None) -> _
         training_args.report_to.remove("swanlab")
 
     if (
-        training_args.parallel_mode == ParallelMode.DISTRIBUTED
-        and training_args.ddp_find_unused_parameters is None
-        and finetuning_args.finetuning_type == "lora"
+            training_args.parallel_mode == ParallelMode.DISTRIBUTED
+            and training_args.ddp_find_unused_parameters is None
+            and finetuning_args.finetuning_type == "lora"
     ):
         logger.info_rank0("Set `ddp_find_unused_parameters` to False in DDP training since LoRA is enabled.")
         training_args.ddp_find_unused_parameters = False
@@ -369,15 +368,15 @@ def get_train_args(args: Optional[Union[dict[str, Any], list[str]]] = None) -> _
         can_resume_from_checkpoint = True
 
     if (
-        training_args.resume_from_checkpoint is None
-        and training_args.do_train
-        and os.path.isdir(training_args.output_dir)
-        and not training_args.overwrite_output_dir
-        and can_resume_from_checkpoint
+            training_args.resume_from_checkpoint is None
+            and training_args.do_train
+            and os.path.isdir(training_args.output_dir)
+            and not training_args.overwrite_output_dir
+            and can_resume_from_checkpoint
     ):
         last_checkpoint = get_last_checkpoint(training_args.output_dir)
         if last_checkpoint is None and any(
-            os.path.isfile(os.path.join(training_args.output_dir, name)) for name in CHECKPOINT_NAMES
+                os.path.isfile(os.path.join(training_args.output_dir, name)) for name in CHECKPOINT_NAMES
         ):
             raise ValueError("Output directory already exists and is not empty. Please set `overwrite_output_dir`.")
 
@@ -387,9 +386,9 @@ def get_train_args(args: Optional[Union[dict[str, Any], list[str]]] = None) -> _
             logger.info_rank0("Change `output_dir` or use `overwrite_output_dir` to avoid.")
 
     if (
-        finetuning_args.stage in ["rm", "ppo"]
-        and finetuning_args.finetuning_type == "lora"
-        and training_args.resume_from_checkpoint is not None
+            finetuning_args.stage in ["rm", "ppo"]
+            and finetuning_args.finetuning_type == "lora"
+            and training_args.resume_from_checkpoint is not None
     ):
         logger.warning_rank0(
             f"Add {training_args.resume_from_checkpoint} to `adapter_name_or_path` to resume training from checkpoint."

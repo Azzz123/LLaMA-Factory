@@ -22,15 +22,15 @@ from llamafactory.model.model_utils.packing import get_seqlens_in_batch, get_unp
     "attention_mask,golden_seq_lens",
     [
         (
-            [
-                [1, 1, 2, 2, 2, 0],
-                [1, 2, 2, 3, 3, 3],
-            ],
-            [2, 3, 1, 2, 3],
+                [
+                    [1, 1, 2, 2, 2, 0],
+                    [1, 2, 2, 3, 3, 3],
+                ],
+                [2, 3, 1, 2, 3],
         ),
         (
-            [[1]],
-            [1],
+                [[1]],
+                [1],
         ),
     ],
 )
@@ -44,19 +44,19 @@ def test_get_seqlens_in_batch(attention_mask, golden_seq_lens):
     "attention_mask,golden_indices,golden_cu_seqlens,golden_max_seqlen",
     [
         (
-            [
-                [1, 1, 2, 2, 2, 0],
-                [1, 2, 2, 3, 3, 3],
-            ],
-            [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11],
-            [0, 2, 5, 6, 8, 11],
-            3,
+                [
+                    [1, 1, 2, 2, 2, 0],
+                    [1, 2, 2, 3, 3, 3],
+                ],
+                [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11],
+                [0, 2, 5, 6, 8, 11],
+                3,
         ),
         (
-            [[1]],
-            [0],
-            [0, 1],
-            1,
+                [[1]],
+                [0],
+                [0, 1],
+                1,
         ),
     ],
 )

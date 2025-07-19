@@ -22,17 +22,16 @@ from transformers import AutoConfig
 
 from llamafactory.train.tuner import run_exp
 
-
 BASE = 2  # gemm (add + mul)
 
 
 def compute_model_flops(
-    model_name_or_path: str,
-    total_batch_size: int,
-    seq_length: int,
-    include_backward: bool = True,
-    include_recompute: bool = False,
-    include_flashattn: bool = False,
+        model_name_or_path: str,
+        total_batch_size: int,
+        seq_length: int,
+        include_backward: bool = True,
+        include_recompute: bool = False,
+        include_flashattn: bool = False,
 ) -> int:
     r"""Calculate the FLOPs of model per forward/backward pass."""
     config = AutoConfig.from_pretrained(model_name_or_path)
@@ -99,16 +98,16 @@ def compute_device_flops(world_size: int) -> float:
 
 
 def calculate_mfu(
-    model_name_or_path: str,
-    batch_size: int = 1,
-    seq_length: int = 1024,
-    num_steps: int = 100,
-    finetuning_type: str = "lora",
-    flash_attn: str = "auto",
-    deepspeed_stage: int = 0,
-    disable_gc: bool = False,
-    liger_kernel: bool = False,
-    unsloth_gc: bool = False,
+        model_name_or_path: str,
+        batch_size: int = 1,
+        seq_length: int = 1024,
+        num_steps: int = 100,
+        finetuning_type: str = "lora",
+        flash_attn: str = "auto",
+        deepspeed_stage: int = 0,
+        disable_gc: bool = False,
+        liger_kernel: bool = False,
+        unsloth_gc: bool = False,
 ) -> float:
     r"""Calculate MFU for given model and hyper-params.
 
@@ -150,9 +149,9 @@ def calculate_mfu(
 
         total_batch_size = batch_size * world_size
         mfu_value = (
-            result["train_steps_per_second"]
-            * compute_model_flops(model_name_or_path, total_batch_size, seq_length)
-            / compute_device_flops(world_size)
+                result["train_steps_per_second"]
+                * compute_model_flops(model_name_or_path, total_batch_size, seq_length)
+                / compute_device_flops(world_size)
         )
         print(f"MFU: {mfu_value * 100:.2f}%")
 

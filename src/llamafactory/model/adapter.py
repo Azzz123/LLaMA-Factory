@@ -19,27 +19,25 @@ import torch
 from peft import LoraConfig, LoraModel, PeftModel, TaskType, get_peft_model
 from transformers.integrations import is_deepspeed_zero3_enabled
 
-from ..extras import logging
 from .model_utils.misc import find_all_linear_modules, find_expanded_modules
 from .model_utils.quantization import QuantizationMethod
 from .model_utils.unsloth import get_unsloth_peft_model, load_unsloth_peft_model
 from .model_utils.visual import COMPOSITE_MODELS, get_forbidden_modules, patch_target_modules
-
+from ..extras import logging
 
 if TYPE_CHECKING:
     from transformers import PretrainedConfig, PreTrainedModel
 
     from ..hparams import FinetuningArguments, ModelArguments
 
-
 logger = logging.get_logger(__name__)
 
 
 def _setup_full_tuning(
-    model: "PreTrainedModel",
-    finetuning_args: "FinetuningArguments",
-    is_trainable: bool,
-    cast_trainable_params_to_fp32: bool,
+        model: "PreTrainedModel",
+        finetuning_args: "FinetuningArguments",
+        is_trainable: bool,
+        cast_trainable_params_to_fp32: bool,
 ) -> None:
     if not is_trainable:
         return
@@ -55,10 +53,10 @@ def _setup_full_tuning(
 
 
 def _setup_freeze_tuning(
-    model: "PreTrainedModel",
-    finetuning_args: "FinetuningArguments",
-    is_trainable: bool,
-    cast_trainable_params_to_fp32: bool,
+        model: "PreTrainedModel",
+        finetuning_args: "FinetuningArguments",
+        is_trainable: bool,
+        cast_trainable_params_to_fp32: bool,
 ) -> None:
     if not is_trainable:
         return
@@ -70,9 +68,9 @@ def _setup_freeze_tuning(
         config = model.config
 
     num_layers = (
-        getattr(config, "num_hidden_layers", None)
-        or getattr(config, "num_layers", None)
-        or getattr(config, "n_layer", None)
+            getattr(config, "num_hidden_layers", None)
+            or getattr(config, "num_layers", None)
+            or getattr(config, "n_layer", None)
     )
     if not num_layers:
         raise ValueError("Current model does not support freeze tuning.")
@@ -128,7 +126,7 @@ def _setup_freeze_tuning(
     forbidden_modules = get_forbidden_modules(model.config, finetuning_args)
     for name, param in model.named_parameters():
         if any(trainable_layer in name for trainable_layer in trainable_layers) and not any(
-            forbidden_module in name for forbidden_module in forbidden_modules
+                forbidden_module in name for forbidden_module in forbidden_modules
         ):
             if cast_trainable_params_to_fp32:
                 param.data = param.data.to(torch.float32)
@@ -139,12 +137,12 @@ def _setup_freeze_tuning(
 
 
 def _setup_lora_tuning(
-    config: "PretrainedConfig",
-    model: "PreTrainedModel",
-    model_args: "ModelArguments",
-    finetuning_args: "FinetuningArguments",
-    is_trainable: bool,
-    cast_trainable_params_to_fp32: bool,
+        config: "PretrainedConfig",
+        model: "PreTrainedModel",
+        model_args: "ModelArguments",
+        finetuning_args: "FinetuningArguments",
+        is_trainable: bool,
+        cast_trainable_params_to_fp32: bool,
 ) -> "PeftModel":
     if is_trainable:
         logger.info_rank0("Fine-tuning method: {}".format("DoRA" if finetuning_args.use_dora else "LoRA"))
@@ -206,9 +204,9 @@ def _setup_lora_tuning(
         target_modules = patch_target_modules(model, finetuning_args, target_modules)
 
         if (
-            finetuning_args.use_dora
-            and getattr(model, "quantization_method", None) is not None
-            and getattr(model, "quantization_method", None) != QuantizationMethod.BNB
+                finetuning_args.use_dora
+                and getattr(model, "quantization_method", None) is not None
+                and getattr(model, "quantization_method", None) != QuantizationMethod.BNB
         ):
             raise ValueError("DoRA is not compatible with PTQ-quantized models.")
 
@@ -259,11 +257,11 @@ def _setup_lora_tuning(
 
 
 def init_adapter(
-    config: "PretrainedConfig",
-    model: "PreTrainedModel",
-    model_args: "ModelArguments",
-    finetuning_args: "FinetuningArguments",
-    is_trainable: bool,
+        config: "PretrainedConfig",
+        model: "PreTrainedModel",
+        model_args: "ModelArguments",
+        finetuning_args: "FinetuningArguments",
+        is_trainable: bool,
 ) -> "PreTrainedModel":
     r"""Initialize the adapters.
 

@@ -21,7 +21,6 @@ from transformers import AutoTokenizer
 
 from llamafactory.train.test_utils import load_dataset_module
 
-
 DEMO_DATA = os.getenv("DEMO_DATA", "llamafactory/demo_data")
 
 TINY_LLAMA3 = os.getenv("TINY_LLAMA3", "llamafactory/tiny-random-Llama-3")
@@ -55,6 +54,6 @@ def test_unsupervised_data(num_samples: int):
         messages = original_data["messages"][index]
         ref_ids = ref_tokenizer.apply_chat_template(messages)
         ref_input_ids = ref_tokenizer.apply_chat_template(messages[:-1], add_generation_prompt=True)
-        ref_labels = ref_ids[len(ref_input_ids) :]
+        ref_labels = ref_ids[len(ref_input_ids):]
         assert train_dataset["input_ids"][index] == ref_input_ids
         assert train_dataset["labels"][index] == ref_labels

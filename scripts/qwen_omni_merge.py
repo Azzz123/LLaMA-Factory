@@ -37,11 +37,11 @@ from transformers import (
 
 
 def merge_lora(
-    base_model_path: str,
-    lora_checkpoint_path: str,
-    extra_file: str = "spk_dict.pt",
-    submodule_name: str = "thinker",
-    save_path: str = "./merged_model_checkpoint",
+        base_model_path: str,
+        lora_checkpoint_path: str,
+        extra_file: str = "spk_dict.pt",
+        submodule_name: str = "thinker",
+        save_path: str = "./merged_model_checkpoint",
 ):
     """Load the original model, merge the LoRA weights.
 
@@ -92,10 +92,10 @@ def merge_lora(
 
 
 def save_full_model(
-    saved_thinker_path: str,
-    base_model_path: str,
-    save_path: str = "./merged_model_checkpoint",
-    extra_file: str = "spk_dict.pt",
+        saved_thinker_path: str,
+        base_model_path: str,
+        save_path: str = "./merged_model_checkpoint",
+        extra_file: str = "spk_dict.pt",
 ):
     """Load the saved thinker module and the original model, replace the thinker in the original model.
 

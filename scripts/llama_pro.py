@@ -28,7 +28,6 @@ from tqdm import tqdm
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, PreTrainedModel
 from transformers.modeling_utils import SAFE_WEIGHTS_INDEX_NAME, SAFE_WEIGHTS_NAME, WEIGHTS_INDEX_NAME, WEIGHTS_NAME
 
-
 if TYPE_CHECKING:
     from transformers import PretrainedConfig
 
@@ -38,11 +37,11 @@ def change_name(name: str, old_index: int, new_index: int) -> str:
 
 
 def block_expansion(
-    model_name_or_path: str,
-    output_dir: str,
-    num_expand: int,
-    shard_size: str = "5GB",
-    save_safetensors: bool = True,
+        model_name_or_path: str,
+        output_dir: str,
+        num_expand: int,
+        shard_size: str = "5GB",
+        save_safetensors: bool = True,
 ):
     r"""Perform block expansion for LLaMA, Mistral, Qwen2 or Yi models.
 

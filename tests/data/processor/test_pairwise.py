@@ -22,7 +22,6 @@ from transformers import AutoTokenizer
 from llamafactory.extras.constants import IGNORE_INDEX
 from llamafactory.train.test_utils import load_dataset_module
 
-
 DEMO_DATA = os.getenv("DEMO_DATA", "llamafactory/demo_data")
 
 TINY_LLAMA3 = os.getenv("TINY_LLAMA3", "llamafactory/tiny-random-Llama-3")
